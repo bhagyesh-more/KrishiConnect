@@ -8,6 +8,9 @@ export type Json =
 
 export type AppRole = 'farmer' | 'buyer' | 'expert' | 'seller' | 'admin';
 export type VerificationStatus = 'none' | 'pending' | 'verified' | 'rejected';
+export type CropStatus = 'planned' | 'sown' | 'growing' | 'harvesting' | 'completed' | 'abandoned';
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskCategory = 'irrigation' | 'fertilizer' | 'pesticide' | 'weeding' | 'harvest' | 'scouting';
 
 export interface Database {
   public: {
@@ -83,6 +86,220 @@ export interface Database {
           granted_at?: string;
           verified_by?: string | null;
           verified_at?: string | null;
+        };
+      };
+      farms: {
+        Row: {
+          id: string;
+          owner_id: string;
+          farm_name: string;
+          total_area_acres: number;
+          irrigation_source: string[];
+          soil_type: string | null;
+          location_district: string;
+          location_taluka: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_id: string;
+          farm_name: string;
+          total_area_acres: number;
+          irrigation_source?: string[];
+          soil_type?: string | null;
+          location_district: string;
+          location_taluka?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          owner_id?: string;
+          farm_name?: string;
+          total_area_acres?: number;
+          irrigation_source?: string[];
+          soil_type?: string | null;
+          location_district?: string;
+          location_taluka?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      farm_fields: {
+        Row: {
+          id: string;
+          farm_id: string;
+          field_name: string;
+          area_acres: number;
+          soil_type: string | null;
+          irrigation_type: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          farm_id: string;
+          field_name: string;
+          area_acres: number;
+          soil_type?: string | null;
+          irrigation_type?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          farm_id?: string;
+          field_name?: string;
+          area_acres?: number;
+          soil_type?: string | null;
+          irrigation_type?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      crop_guides: {
+        Row: {
+          id: string;
+          crop_code: string;
+          crop_name_mr: string;
+          crop_name_hi: string;
+          crop_name_en: string;
+          variety: string | null;
+          ideal_season: 'Kharif' | 'Rabi' | 'Zaid' | 'Perennial';
+          growing_duration_days: number;
+          soil_requirements: string | null;
+          water_requirements: string | null;
+          growth_stages: Json;
+          common_pests: Json;
+          source_attribution: string;
+          last_verified_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          crop_code: string;
+          crop_name_mr: string;
+          crop_name_hi: string;
+          crop_name_en: string;
+          variety?: string | null;
+          ideal_season: 'Kharif' | 'Rabi' | 'Zaid' | 'Perennial';
+          growing_duration_days: number;
+          soil_requirements?: string | null;
+          water_requirements?: string | null;
+          growth_stages?: Json;
+          common_pests?: Json;
+          source_attribution: string;
+          last_verified_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          crop_code?: string;
+          crop_name_mr?: string;
+          crop_name_hi?: string;
+          crop_name_en?: string;
+          variety?: string | null;
+          ideal_season?: 'Kharif' | 'Rabi' | 'Zaid' | 'Perennial';
+          growing_duration_days?: number;
+          soil_requirements?: string | null;
+          water_requirements?: string | null;
+          growth_stages?: Json;
+          common_pests?: Json;
+          source_attribution?: string;
+          last_verified_at?: string;
+          created_at?: string;
+        };
+      };
+      crop_records: {
+        Row: {
+          id: string;
+          field_id: string;
+          guide_id: string | null;
+          custom_crop_name: string | null;
+          variety: string | null;
+          season: string;
+          sowing_date: string;
+          expected_harvest_date: string | null;
+          actual_harvest_date: string | null;
+          status: CropStatus;
+          total_yield_quintals: number | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          field_id: string;
+          guide_id?: string | null;
+          custom_crop_name?: string | null;
+          variety?: string | null;
+          season?: string;
+          sowing_date: string;
+          expected_harvest_date?: string | null;
+          actual_harvest_date?: string | null;
+          status?: CropStatus;
+          total_yield_quintals?: number | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          field_id?: string;
+          guide_id?: string | null;
+          custom_crop_name?: string | null;
+          variety?: string | null;
+          season?: string;
+          sowing_date?: string;
+          expected_harvest_date?: string | null;
+          actual_harvest_date?: string | null;
+          status?: CropStatus;
+          total_yield_quintals?: number | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      crop_tasks: {
+        Row: {
+          id: string;
+          crop_record_id: string;
+          title: string;
+          description: string | null;
+          category: TaskCategory;
+          due_date: string;
+          is_completed: boolean;
+          completed_at: string | null;
+          priority: TaskPriority;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          crop_record_id: string;
+          title: string;
+          description?: string | null;
+          category: TaskCategory;
+          due_date: string;
+          is_completed?: boolean;
+          completed_at?: string | null;
+          priority?: TaskPriority;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          crop_record_id?: string;
+          title?: string;
+          description?: string | null;
+          category?: TaskCategory;
+          due_date?: string;
+          is_completed?: boolean;
+          completed_at?: string | null;
+          priority?: TaskPriority;
+          created_at?: string;
+          updated_at?: string;
         };
       };
       expert_verifications: {
