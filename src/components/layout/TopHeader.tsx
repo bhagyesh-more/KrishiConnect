@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation, SupportedLanguage } from "@/lib/i18n";
-import { Globe, Sprout, Wifi } from "lucide-react";
+import { Globe, Sprout, Wifi, User } from "lucide-react";
 
 export const TopHeader: React.FC = () => {
   const { language, setLanguage, t } = useTranslation();
@@ -85,6 +85,15 @@ export const TopHeader: React.FC = () => {
               </select>
             </div>
           </div>
+
+          {/* Profile / Account Shortcut */}
+          <Link
+            href="/profile"
+            aria-label={t("nav.profile")}
+            className="flex items-center justify-center w-9 h-9 rounded-xl bg-krishi-ivory-100 hover:bg-krishi-primary-50 border border-krishi-border text-krishi-deepGreen transition-colors focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen"
+          >
+            <User className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </header>
