@@ -1,0 +1,42 @@
+{
+  "name": "कृषीकनेक्ट — KrishiConnect",
+  "short_name": "KrishiConnect",
+  "description": "शेतकऱ्यांना जोडा, एकत्र वाढा — Farmer-First Digital Agriculture Platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F5EE",
+  "theme_color": "#185C37",
+  "orientation": "portrait-primary",
+  "lang": "mr",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "माझी पिके (My Crops)",
+      "url": "/crops",
+      "description": "पिकांचे व्यवस्थापन व सल्ला"
+    },
+    {
+      "name": "शेतकरी मंच (Community)",
+      "url": "/community",
+      "description": "शेतकरी चर्चा व प्रश्नोत्तरे"
+    },
+    {
+      "name": "बाजार (Marketplace)",
+      "url": "/marketplace",
+      "description": "थेट शेतीमाल खरेदी-विक्री"
+    }
+  ]
+}

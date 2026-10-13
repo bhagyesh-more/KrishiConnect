@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "KrishiConnect",
+    "englishName": "KrishiConnect",
+    "tagline": "Connect Farmers. Grow Together.",
+    "subTagline": "Digital agriculture platform connecting farmers, buyers and experts across Maharashtra"
+  },
+  "nav": {
+    "home": "Home",
+    "crops": "My Crops",
+    "community": "Community",
+    "marketplace": "Market",
+    "profile": "Profile",
+    "weather": "Weather",
+    "schemes": "Government Schemes",
+    "experts": "Agricultural Experts",
+    "learning": "Learning Centre",
+    "admin": "Admin"
+  },
+  "languages": {
+    "mr": "मराठी (Marathi)",
+    "hi": "हिंदी (Hindi)",
+    "en": "English",
+    "select": "Select Language"
+  },
+  "landing": {
+    "heroTitle": "Smart Agriculture for Empowered Farmers",
+    "heroDesc": "Hyper-local weather insights, growth-stage crop management, farmer peer discussions, and direct produce markets — all in one accessible platform.",
+    "ctaExplore": "Explore Platform",
+    "ctaDownload": "Install PWA App",
+    "featuresTitle": "Core Platform Capabilities",
+    "featuresSubtitle": "Tailored for smallholder farmers and agricultural communities in Maharashtra",
+    "weatherFeatureTitle": "Weather & Farming Advisory",
+    "weatherFeatureDesc": "Localized forecasts, precipitation risk alerts, and timely field activity schedules.",
+    "cropsFeatureTitle": "Crop Care & Stage Reminders",
+    "cropsFeatureDesc": "Sowing-to-harvest timelines with scheduled irrigation, fertilizer, and pest reminders.",
+    "communityFeatureTitle": "Farmer Q&A Community",
+    "communityFeatureDesc": "Exchange field experience with progressive farmers and agronomy specialists.",
+    "marketFeatureTitle": "Direct Produce Marketplace",
+    "marketFeatureDesc": "Direct buyer connection without middlemen; fair prices and transparent enquiries.",
+    "schemesFeatureTitle": "Government Schemes",
+    "schemesFeatureDesc": "Clear guidelines and official portal links for MahaDBT subsidies and crop insurance.",
+    "expertsFeatureTitle": "Verified Agronomists",
+    "expertsFeatureDesc": "Accredited specialist consultations for complex pest and disease issues.",
+    "capstoneNotice": "Note: Built as a final-year Capstone demonstration. Phase 1 provides the responsive foundation, design system, and mobile shell."
+  },
+  "status": {
+    "online": "Online",
+    "offline": "Offline Mode",
+    "offlineBanner": "You are currently offline. Previously loaded guides are accessible, but live updates require an internet connection.",
+    "comingSoon": "Available in Upcoming Phase",
+    "foundationNotice": "Phase 1: Foundation Shell & Design System",
+    "beta": "Demo Preview"
+  },
+  "roles": {
+    "farmer": "Farmer",
+    "buyer": "Produce Buyer",
+    "expert": "Agricultural Expert",
+    "seller": "Agri Seller",
+    "admin": "Administrator",
+    "verified": "Verified",
+    "pending": "Pending Verification"
+  },
+  "common": {
+    "back": "Back",
+    "viewMore": "View Details",
+    "refresh": "Refresh",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading details...",
+    "noData": "No data available",
+    "tryAgain": "Try Again",
+    "all": "All",
+    "active": "Active",
+    "status": "Status"
+  },
+  "errors": {
+    "pageNotFound": "Page Not Found",
+    "pageNotFoundDesc": "The page you are looking for does not exist or has been moved.",
+    "goHome": "Return to Home",
+    "somethingWentWrong": "Something Went Wrong",
+    "somethingWentWrongDesc": "Please refresh the page or try again in a few moments."
+  }
+}
