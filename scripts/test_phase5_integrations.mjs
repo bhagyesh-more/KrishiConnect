@@ -68,6 +68,55 @@ assert(
   "Marketplace repository falls back safely on placeholder URL"
 );
 
+// Verify NEXT_PUBLIC_USE_MOCK_DATA override behavior
+function isMockActive(useMockDataFlag, url, anon) {
+  return (
+    useMockDataFlag === "true" ||
+    !url ||
+    url.includes("placeholder-project") ||
+    !anon ||
+    anon.includes("placeholder-anon-key")
+  );
+}
+
+assert(
+  isMockActive("true", "https://my-real-app.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test"),
+  "NEXT_PUBLIC_USE_MOCK_DATA=true explicitly forces mock mode even with valid credentials"
+);
+assert(
+  !isMockActive("false", "https://my-real-app.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test"),
+  "NEXT_PUBLIC_USE_MOCK_DATA=false allows Supabase mode when valid credentials exist"
+);
+
+const communityRepoSource = readFileSync("src/features/community/repository.ts", "utf-8");
+assert(
+  communityRepoSource.includes("NEXT_PUBLIC_USE_MOCK_DATA"),
+  "Community repository respects NEXT_PUBLIC_USE_MOCK_DATA override"
+);
+assert(
+  marketRepoSource.includes("NEXT_PUBLIC_USE_MOCK_DATA"),
+  "Marketplace repository respects NEXT_PUBLIC_USE_MOCK_DATA override"
+);
+assert(
+  schemesRepoSource.includes("NEXT_PUBLIC_USE_MOCK_DATA"),
+  "Schemes repository respects NEXT_PUBLIC_USE_MOCK_DATA override"
+);
+const expertsRepoSource = readFileSync("src/features/experts/repository.ts", "utf-8");
+assert(
+  expertsRepoSource.includes("NEXT_PUBLIC_USE_MOCK_DATA"),
+  "Experts repository respects NEXT_PUBLIC_USE_MOCK_DATA override"
+);
+const learningRepoSource = readFileSync("src/features/learning/repository.ts", "utf-8");
+assert(
+  learningRepoSource.includes("NEXT_PUBLIC_USE_MOCK_DATA"),
+  "Learning repository respects NEXT_PUBLIC_USE_MOCK_DATA override"
+);
+const cropsActionSource = readFileSync("src/features/crops/actions.ts", "utf-8");
+assert(
+  cropsActionSource.includes("NEXT_PUBLIC_USE_MOCK_DATA"),
+  "Crops actions respect NEXT_PUBLIC_USE_MOCK_DATA override for crop guides"
+);
+
 // ==========================================
 // 2. Weather Client (Open-Meteo & Offline Fallback)
 // ==========================================

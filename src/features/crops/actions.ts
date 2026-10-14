@@ -126,6 +126,10 @@ export async function createFieldAction(input: FieldInput): Promise<ActionResult
 // ==============================================================================
 
 export async function getCropGuidesAction(): Promise<ActionResult> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true") {
+    return { success: true, data: DEFAULT_CROP_GUIDES };
+  }
+
   const supabase = createClient();
   const { data, error } = await (supabase.from("crop_guides") as any)
     .select("*")
