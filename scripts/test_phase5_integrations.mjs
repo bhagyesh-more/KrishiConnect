@@ -134,14 +134,14 @@ assert(
   "Auth callback route does not leak raw error messages in redirect parameters"
 );
 
-// Verify open-redirect sanitizer logic
-function testSanitizeNextUrl(next) {
-  if (!next) return "/home";
-  if (next.startsWith("/") && !next.startsWith("//") && !next.includes("\\")) {
-    return next;
-  }
-  return "/home";
-}
+// Verify open-redirect sanitizer logic directly from src/features/auth/utils.ts implementation
+const authUtilsSource = readFileSync("src/features/auth/utils.ts", "utf-8");
+const testSanitizeNextUrl = new Function(
+  authUtilsSource.replace(
+    /export function sanitizeNextUrl\(next:\s*string\s*\|\s*null\):\s*string/,
+    "return function sanitizeNextUrl(next)"
+  )
+)();
 
 assert(testSanitizeNextUrl("/crops") === "/crops", "Allows valid internal next destination (/crops)");
 assert(testSanitizeNextUrl("/profile") === "/profile", "Allows valid internal next destination (/profile)");
