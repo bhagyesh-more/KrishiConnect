@@ -1,5 +1,5 @@
-// KrishiConnect — PWA Service Worker (v1.0.0)
-const CACHE_NAME = 'krishiconnect-shell-v1';
+// KrishiConnect — PWA Service Worker (v1.1.0)
+const CACHE_NAME = 'krishiconnect-shell-v2';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -8,11 +8,10 @@ const STATIC_ASSETS = [
   '/icons/icon-512x512.png',
 ];
 
-// Install: Pre-cache core shell
+// Install: Pre-cache core shell safely
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // Pre-cache individual items gracefully without failing the entire install
       return Promise.allSettled(
         STATIC_ASSETS.map((url) =>
           fetch(url)
@@ -20,7 +19,7 @@ self.addEventListener('install', (event) => {
               if (res.ok) return cache.put(url, res);
             })
             .catch(() => {
-              // Ignore failure for optional icons during initial install
+              // Ignore failure for optional assets during initial install
             })
         )
       );
@@ -41,27 +40,30 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: Strategy depending on request type
+// Fetch: Strategy with strict privacy & security constraints
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Security constraint: NEVER cache API routes, auth calls, or external mutation requests
+  // Security constraint: NEVER cache API routes, auth calls, callback handlers, or external calls
   if (
     request.method !== 'GET' ||
     url.pathname.startsWith('/api/') ||
     url.pathname.startsWith('/auth/') ||
+    url.pathname.includes('/auth/callback') ||
+    url.hostname.includes('supabase.co') ||
     url.origin !== self.location.origin
   ) {
     return;
   }
 
-  // Navigation requests: Network-First with cache fallback
+  // Navigation requests: Network-First; fallback to /offline on network failure
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (response.ok) {
+          // Do not cache redirects or server error responses
+          if (response.ok && response.status === 200) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
@@ -76,7 +78,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets (CSS, JS, Fonts, Images): Cache-First / Stale-While-Revalidate
+  // Static assets (CSS, JS, Fonts, Images): Cache-First with Stale-While-Revalidate
   if (
     request.destination === 'style' ||
     request.destination === 'script' ||
@@ -87,7 +89,7 @@ self.addEventListener('fetch', (event) => {
       caches.match(request).then((cached) => {
         const fetchPromise = fetch(request)
           .then((networkResponse) => {
-            if (networkResponse.ok) {
+            if (networkResponse.ok && networkResponse.status === 200) {
               const copy = networkResponse.clone();
               caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
             }

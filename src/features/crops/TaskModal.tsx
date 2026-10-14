@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
@@ -22,6 +23,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t, language } = useTranslation();
   const [cropRecordId, setCropRecordId] = useState(
     defaultCropRecordId || (cropRecords[0]?.id || "")
   );
@@ -41,12 +43,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   if (!isOpen) return null;
 
   const categories = [
-    { id: "irrigation", label: "पाणी देणे (Irrigation)", icon: Droplets, color: "text-blue-600 bg-blue-50 border-blue-200" },
-    { id: "fertilizer", label: "खत व्यवस्थापन (Fertilizer)", icon: FlaskConical, color: "text-amber-600 bg-amber-50 border-amber-200" },
-    { id: "pesticide", label: "कीड/रोग नियंत्रण (Pesticide)", icon: Bug, color: "text-red-600 bg-red-50 border-red-200" },
-    { id: "weeding", label: "खुरपणी / तण (Weeding)", icon: Scissors, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
-    { id: "scouting", label: "पाहणी (Crop Scouting)", icon: Eye, color: "text-purple-600 bg-purple-50 border-purple-200" },
-    { id: "harvest", label: "काढणी (Harvesting)", icon: Sparkles, color: "text-orange-600 bg-orange-50 border-orange-200" },
+    { id: "irrigation", label: "Irrigation (सिंचन)", icon: Droplets, color: "text-blue-600 bg-blue-50 border-blue-200" },
+    { id: "fertilizer", label: "Fertilizer (खत)", icon: FlaskConical, color: "text-amber-600 bg-amber-50 border-amber-200" },
+    { id: "pesticide", label: "Pesticide (कीटकनाशक)", icon: Bug, color: "text-red-600 bg-red-50 border-red-200" },
+    { id: "weeding", label: "Weeding (खुरपणी)", icon: Scissors, color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
+    { id: "scouting", label: "Scouting (पाहणी)", icon: Eye, color: "text-purple-600 bg-purple-50 border-purple-200" },
+    { id: "harvest", label: "Harvest (काढणी)", icon: Sparkles, color: "text-orange-600 bg-orange-50 border-orange-200" },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,12 +56,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     setErrorMsg(null);
 
     if (!cropRecordId) {
-      setErrorMsg("कृपया ज्या पिकासाठी काम आहे ते पीक निवडा");
+      setErrorMsg("Please select a crop record.");
       return;
     }
 
     if (!title.trim()) {
-      setErrorMsg("कृपया कामाचे नाव टाका");
+      setErrorMsg("Please enter a task title.");
       return;
     }
 
@@ -75,7 +77,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       });
 
       if (!res.success) {
-        setErrorMsg(res.error || "काम जोडण्यात त्रुटी आली");
+        setErrorMsg(res.error || t("common.error"));
         setIsLoading(false);
         return;
       }
@@ -83,7 +85,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       onSuccess();
       onClose();
     } catch (err: any) {
-      setErrorMsg(err?.message || "नेटवर्क किंवा सर्व्हर त्रुटी");
+      setErrorMsg(err?.message || t("common.error"));
     } finally {
       setIsLoading(false);
     }
@@ -94,28 +96,28 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="task-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden border border-krishi-leafGreen/30">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden border border-krishi-border">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-krishi-lightGray/40 bg-krishi-warmIvory/60">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-krishi-border bg-krishi-ivory-100/60">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-krishi-deepGreen text-white flex items-center justify-center shadow-sm">
               <CheckSquare className="w-5 h-5 text-krishi-leafGreen" />
             </div>
             <div>
               <h2 id="task-modal-title" className="text-lg font-bold text-krishi-deepGreen">
-                नवीन पीक कार्य नोंदवा (Add Care Task)
+                {t("farming.addTask")}
               </h2>
-              <p className="text-xs text-krishi-gray">
-                वेळेवर कामे पूर्ण करून पीक निरोगी ठेवा
+              <p className="text-xs text-krishi-textMuted">
+                {t("farming.tasks")}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            aria-label="Close dialog"
-            className="p-2 text-krishi-gray hover:text-krishi-charcoal hover:bg-white rounded-full transition-colors"
+            aria-label={t("common.close")}
+            className="p-2 text-krishi-textMuted hover:text-krishi-deepGreen hover:bg-white rounded-full transition-colors min-h-[44px] min-w-[44px]"
           >
             <X className="w-5 h-5" />
           </button>
@@ -134,28 +136,27 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* Select Crop */}
           <div>
-            <label className="block font-semibold text-krishi-charcoal mb-1.5">
-              संबंधित पीक निवडा (Select Crop) <span className="text-red-500">*</span>
+            <label className="block font-semibold text-krishi-textMain mb-1.5">
+              {t("farming.crops")} <span className="text-red-500">*</span>
             </label>
             <select
               value={cropRecordId}
               onChange={(e) => setCropRecordId(e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-krishi-lightGray rounded-xl bg-white text-krishi-charcoal focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen transition"
+              className="w-full min-h-[48px] px-3.5 py-2.5 border border-krishi-border rounded-xl bg-white text-krishi-textMain focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen transition"
               required
             >
               {cropRecords.length === 0 ? (
-                <option value="">कोणतेही सक्रिय पीक उपलब्ध नाही</option>
+                <option value="">{t("farming.noCrops")}</option>
               ) : (
                 cropRecords.map((crop) => {
                   const cropName =
-                    crop.crop_guides?.crop_name_mr ||
+                    (language === "en" ? crop.crop_guides?.crop_name_en : (language === "hi" ? crop.crop_guides?.crop_name_hi : crop.crop_guides?.crop_name_mr)) ||
                     crop.custom_crop_name ||
-                    crop.crop_name ||
-                    "पीक";
-                  const fieldName = crop.farm_fields?.field_name || "शेतात";
+                    t("farming.crops");
+                  const fieldName = crop.farm_fields?.field_name || t("farming.fields");
                   return (
                     <option key={crop.id} value={crop.id}>
-                      {cropName} ({crop.variety || "सामान्य"}) — {fieldName}
+                      {cropName} ({crop.variety || "General"}) — {fieldName}
                     </option>
                   );
                 })
@@ -165,8 +166,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* Category selection */}
           <div>
-            <label className="block font-semibold text-krishi-charcoal mb-2">
-              कार्याचा प्रकार (Task Category) <span className="text-red-500">*</span>
+            <label className="block font-semibold text-krishi-textMain mb-2">
+              Category <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
               {categories.map((cat) => {
@@ -177,10 +178,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     type="button"
                     key={cat.id}
                     onClick={() => setCategory(cat.id as any)}
-                    className={`flex items-center space-x-2.5 p-2.5 rounded-xl border text-left text-xs font-medium transition-all ${
+                    className={`flex items-center space-x-2.5 p-2.5 rounded-xl border text-left text-xs font-medium transition-all min-h-[44px] ${
                       isSelected
-                        ? "border-krishi-deepGreen bg-krishi-leafGreen/15 text-krishi-deepGreen font-semibold ring-1 ring-krishi-deepGreen"
-                        : "border-krishi-lightGray/70 hover:bg-krishi-warmIvory/60 text-krishi-charcoal"
+                        ? "border-krishi-deepGreen bg-krishi-primary-50 text-krishi-deepGreen font-semibold ring-1 ring-krishi-deepGreen"
+                        : "border-krishi-border hover:bg-krishi-ivory-100 text-krishi-textMain"
                     }`}
                   >
                     <div className={`p-1.5 rounded-lg ${cat.color}`}>
@@ -195,12 +196,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* Title */}
           <div>
-            <label className="block font-semibold text-krishi-charcoal mb-1.5">
-              कामाचे शीर्षक (Task Title) <span className="text-red-500">*</span>
+            <label className="block font-semibold text-krishi-textMain mb-1.5">
+              Task Title <span className="text-red-500">*</span>
             </label>
             <Input
               type="text"
-              placeholder="उदा. ठिबक सिंचन सुरू करणे, युरिया खत देणे"
+              placeholder="e.g. Turn on drip irrigation, apply urea"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -210,8 +211,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {/* Due Date & Priority */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-krishi-charcoal mb-1.5">
-                नियोजित तारीख (Due Date) <span className="text-red-500">*</span>
+              <label className="block font-semibold text-krishi-textMain mb-1.5">
+                Due Date <span className="text-red-500">*</span>
               </label>
               <Input
                 type="date"
@@ -222,53 +223,54 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-semibold text-krishi-charcoal mb-1.5">
-                प्राधान्य (Priority)
+              <label className="block font-semibold text-krishi-textMain mb-1.5">
+                Priority
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 border border-krishi-lightGray rounded-xl bg-white text-krishi-charcoal focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen transition"
+                className="w-full min-h-[48px] px-3.5 py-2.5 border border-krishi-border rounded-xl bg-white text-krishi-textMain focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen transition"
               >
-                <option value="low">कमी (Low)</option>
-                <option value="medium">मध्यम (Medium)</option>
-                <option value="high">उच्च (High)</option>
-                <option value="urgent">तातडीचे (Urgent)</option>
+                <option value="low">Low (कमी)</option>
+                <option value="medium">Medium (मध्यम)</option>
+                <option value="high">High (उच्च)</option>
+                <option value="urgent">Urgent (तातडीचे)</option>
               </select>
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block font-semibold text-krishi-charcoal mb-1.5">
-              तपशील / सूचना (Notes / Description)
+            <label className="block font-semibold text-krishi-textMain mb-1.5">
+              Description / Notes
             </label>
             <textarea
               rows={2}
-              placeholder="उदा. पाण्याचा प्रवाह तपासा, खताचे प्रमाण व्यवस्थित ठेवा"
+              placeholder="e.g. Check water flow rate, calibrate fertilizer dosage"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-krishi-lightGray rounded-xl bg-white text-krishi-charcoal focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen transition"
+              className="w-full px-3.5 py-2.5 border border-krishi-border rounded-xl bg-white text-krishi-textMain focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen transition"
             />
           </div>
 
           {/* Footer Action */}
-          <div className="flex items-center justify-end space-x-3 pt-3 border-t border-krishi-lightGray/40">
+          <div className="flex items-center justify-end space-x-3 pt-3 border-t border-krishi-border">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isLoading}
+              className="min-h-[44px]"
             >
-              रद्द करा
+              {t("common.cancel")}
             </Button>
             <Button
               type="submit"
               variant="primary"
               disabled={isLoading}
-              className="min-w-[120px]"
+              className="min-w-[120px] min-h-[44px]"
             >
-              {isLoading ? "जतन होत आहे..." : "काम जोडा"}
+              {isLoading ? t("common.loading") : t("common.save")}
             </Button>
           </div>
         </form>

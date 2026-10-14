@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 import { OfflineIndicator } from "@/components/layout/OfflineIndicator";
+import { InstallPwaPrompt } from "@/components/layout/InstallPwaPrompt";
 import React from "react";
 
 export const metadata: Metadata = {
@@ -33,13 +34,21 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+import { cookies } from "next/headers";
+import { SupportedLanguage } from "@/lib/i18n";
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+  const langCookie = cookieStore.get("krishiconnect_lang")?.value;
+  const initialLang: SupportedLanguage =
+    langCookie === "hi" || langCookie === "en" || langCookie === "mr" ? langCookie : "mr";
+
   return (
-    <html lang="mr">
+    <html lang={initialLang}>
       <head>
         {/* Service Worker Registration Script */}
         <script
@@ -62,8 +71,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-krishi-warmIvory text-krishi-textMain flex flex-col antialiased">
-        <I18nProvider>
+        <I18nProvider initialLanguage={initialLang}>
           <OfflineIndicator />
+          <InstallPwaPrompt />
           <div className="flex-1 flex flex-col">{children}</div>
         </I18nProvider>
       </body>

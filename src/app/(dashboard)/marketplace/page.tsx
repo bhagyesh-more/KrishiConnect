@@ -118,7 +118,8 @@ export default function MarketplacePage() {
           <div className="flex items-center gap-2">
             <Link
               href="/home"
-              className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-1 -ml-1 rounded-lg"
+              className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 rounded-xl active:bg-krishi-primary-50"
+              aria-label="Back to home"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
@@ -126,7 +127,7 @@ export default function MarketplacePage() {
               <div className="p-2 bg-krishi-primary-100 text-krishi-deepGreen rounded-xl">
                 <Store className="w-5 h-5" />
               </div>
-              <h1 className="text-2xl font-extrabold text-krishi-deepGreen tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-krishi-deepGreen tracking-tight">
                 {t("marketplace.title")}
               </h1>
             </div>
@@ -142,7 +143,7 @@ export default function MarketplacePage() {
             size="md"
             onClick={handleRefresh}
             disabled={refreshing || loading}
-            className="text-xs"
+            className="text-xs min-h-[44px] rounded-xl px-3"
           >
             <RefreshCw className={`w-3.5 h-3.5 mr-1 ${refreshing ? "animate-spin" : ""}`} />
             <span>रिफ्रेश</span>

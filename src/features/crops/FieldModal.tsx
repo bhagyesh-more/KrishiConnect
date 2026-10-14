@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
@@ -22,6 +23,7 @@ export const FieldModal: React.FC<FieldModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { t } = useTranslation();
   const [farmId, setFarmId] = useState(defaultFarmId || (farms[0]?.id || ""));
   const [fieldName, setFieldName] = useState("");
   const [areaAcres, setAreaAcres] = useState<number>(1.5);
@@ -51,17 +53,22 @@ export const FieldModal: React.FC<FieldModalProps> = ({
         onSuccess();
         onClose();
       } else {
-        setErrorMsg(res.error || "तुकडा जोडणे अयशस्वी झाले.");
+        setErrorMsg(res.error || t("common.error"));
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "त्रुटी आली.");
+      setErrorMsg(err.message || t("common.error"));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="field-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+    >
       <div className="bg-white w-full max-w-md rounded-3xl border border-krishi-border shadow-floating overflow-hidden flex flex-col">
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-krishi-border flex items-center justify-between bg-krishi-ivory-100/60">
@@ -70,17 +77,18 @@ export const FieldModal: React.FC<FieldModalProps> = ({
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-krishi-deepGreen">
-                शेताचा तुकडा जोडा (Add Field)
+              <h3 id="field-modal-title" className="text-base sm:text-lg font-bold text-krishi-deepGreen">
+                {t("farming.addField")}
               </h3>
               <p className="text-xs text-krishi-textMuted">
-                विशिष्ट पिकाच्या नियोजनासाठी क्षेत्र विभागणी
+                {t("farming.fieldName")} & {t("farming.totalArea")}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl hover:bg-krishi-ivory-200 flex items-center justify-center text-krishi-textMuted transition-colors"
+            aria-label={t("common.close")}
+            className="w-9 h-9 rounded-xl hover:bg-krishi-ivory-200 flex items-center justify-center text-krishi-textMuted transition-colors min-h-[44px] min-w-[44px]"
           >
             <X className="w-5 h-5" />
           </button>
@@ -97,7 +105,7 @@ export const FieldModal: React.FC<FieldModalProps> = ({
           {/* Farm Selector */}
           <div className="space-y-1.5 text-left">
             <label className="block text-sm font-semibold text-krishi-textMain">
-              मुख्य शेत निवडा (Select Farm)
+              {t("farming.farms")}
             </label>
             <select
               value={farmId}
@@ -107,22 +115,22 @@ export const FieldModal: React.FC<FieldModalProps> = ({
             >
               {farms.map((f) => (
                 <option key={f.id} value={f.id}>
-                  {f.farm_name} ({f.total_area_acres} एकर • {f.location_district})
+                  {f.farm_name} ({f.total_area_acres} {t("farming.acresUnit")} • {f.location_district})
                 </option>
               ))}
             </select>
           </div>
 
           <Input
-            label="तुकड्याचे नाव (Field Name / Identifier)"
+            label={t("farming.fieldName")}
             required
-            placeholder="उदा. गट नं. ४५ / उत्तरेकडील शेत"
+            placeholder="उदा. गट नं. ४५ / उत्तर शेत"
             value={fieldName}
             onChange={(e) => setFieldName(e.target.value)}
           />
 
           <Input
-            label="क्षेत्रफळ एकरमध्ये (Area in Acres)"
+            label={t("farming.totalArea")}
             type="number"
             step="0.1"
             min="0.1"
@@ -134,43 +142,43 @@ export const FieldModal: React.FC<FieldModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5 text-left">
               <label className="block text-sm font-semibold text-krishi-textMain">
-                माती
+                {t("farming.soilTypeLabel")}
               </label>
               <select
                 value={soilType}
                 onChange={(e) => setSoilType(e.target.value)}
                 className="w-full min-h-[48px] rounded-xl border border-krishi-border bg-white px-2 py-2 text-xs font-medium focus:ring-2 focus:ring-krishi-deepGreen"
               >
-                <option value="काळी जमीन">काळी जमीन</option>
-                <option value="मध्यम काळी">मध्यम काळी</option>
-                <option value="हलकी मुरमाड">हलकी मुरमाड</option>
-                <option value="लाल तांबडी">लाल तांबडी</option>
+                <option value="काळी जमीन">काळी जमीन (Black Soil)</option>
+                <option value="मध्यम काळी">मध्यम काळी (Medium Black)</option>
+                <option value="हलकी मुरमाड">हलकी मुरमाड (Murum)</option>
+                <option value="लाल तांबडी">लाल तांबडी (Red Soil)</option>
               </select>
             </div>
 
             <div className="space-y-1.5 text-left">
               <label className="block text-sm font-semibold text-krishi-textMain">
-                सिंचन
+                {t("farming.irrigationSourceLabel")}
               </label>
               <select
                 value={irrigationType}
                 onChange={(e) => setIrrigationType(e.target.value)}
                 className="w-full min-h-[48px] rounded-xl border border-krishi-border bg-white px-2 py-2 text-xs font-medium focus:ring-2 focus:ring-krishi-deepGreen"
               >
-                <option value="ठिबक सिंचन">ठिबक सिंचन</option>
-                <option value="तुषार सिंचन">तुषार सिंचन</option>
-                <option value="पाटपाणी">पाटपाणी</option>
-                <option value="कोरडवाहू">कोरडवाहू</option>
+                <option value="ठिबक सिंचन">ठिबक सिंचन (Drip)</option>
+                <option value="तुषार सिंचन">तुषार सिंचन (Sprinkler)</option>
+                <option value="पाटपाणी">पाटपाणी (Flood)</option>
+                <option value="कोरडवाहू">कोरडवाहू (Rainfed)</option>
               </select>
             </div>
           </div>
 
           <div className="pt-3 flex items-center justify-end gap-2 border-t border-krishi-border">
-            <Button type="button" variant="ghost" size="md" onClick={onClose}>
-              रद्द करा
+            <Button type="button" variant="ghost" size="md" onClick={onClose} className="min-h-[44px]">
+              {t("common.cancel")}
             </Button>
-            <Button type="submit" variant="primary" size="md" isLoading={isLoading}>
-              तुकडा जोडा (Save Field)
+            <Button type="submit" variant="primary" size="md" isLoading={isLoading} className="min-h-[44px]">
+              {t("common.save")}
             </Button>
           </div>
         </form>

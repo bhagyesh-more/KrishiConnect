@@ -4,12 +4,12 @@ import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { signInAction } from "@/features/auth/actions";
-import { LogIn, UserPlus, KeyRound, AlertCircle, CheckCircle2, ShieldCheck } from "lucide-react";
+import { LogIn, AlertCircle, CheckCircle2, ShieldCheck } from "lucide-react";
 
 function LoginFormContent() {
   const { t } = useTranslation();
@@ -26,9 +26,9 @@ function LoginFormContent() {
   const authErrorParam = searchParams.get("error");
   React.useEffect(() => {
     if (authErrorParam === "auth_callback_failed") {
-      setErrorMsg("प्रमाणीकरण लिंक अवैध किंवा कालबाह्य झाली आहे. कृपया लॉगिन करा. (Authentication link is invalid or expired. Please log in).");
+      setErrorMsg(t("auth.authCallbackFailed"));
     }
-  }, [authErrorParam]);
+  }, [authErrorParam, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,15 +39,15 @@ function LoginFormContent() {
     try {
       const res = await signInAction({ email, password });
       if (res.success) {
-        setSuccessMsg(res.message || "लॉगिन यशस्वी!");
+        setSuccessMsg(res.message || t("auth.loginSuccess"));
         setTimeout(() => {
           router.push(redirectTo);
         }, 600);
       } else {
-        setErrorMsg(res.error || "लॉगिन अयशस्वी झाले.");
+        setErrorMsg(res.error || t("auth.loginFailed"));
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "काहीतरी चूक झाली.");
+      setErrorMsg(err.message || t("common.error"));
     } finally {
       setIsLoading(false);
     }
@@ -60,10 +60,10 @@ function LoginFormContent() {
           <LogIn className="w-6 h-6" />
         </div>
         <CardTitle className="text-2xl font-black text-krishi-deepGreen">
-          खात्यात प्रवेश करा (Log In)
+          {t("auth.loginTitle")}
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          {t("app.subTagline")}
+          {t("auth.loginSubtitle")}
         </CardDescription>
       </CardHeader>
 
@@ -81,22 +81,22 @@ function LoginFormContent() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="ईमेल आयडी (Email Address)"
+          label={t("auth.emailLabel")}
           type="email"
           required
           autoComplete="email"
-          placeholder="shree@krishi.demo"
+          placeholder={t("auth.emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <div className="space-y-1">
           <Input
-            label="पासवर्ड (Password)"
+            label={t("auth.passwordLabel")}
             type="password"
             required
             autoComplete="current-password"
-            placeholder="••••••••"
+            placeholder={t("auth.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -105,7 +105,7 @@ function LoginFormContent() {
               href="/forgot-password"
               className="text-xs font-semibold text-krishi-deepGreen hover:underline"
             >
-              पासवर्ड विसरलात? (Forgot Password?)
+              {t("auth.forgotPasswordLink")}
             </Link>
           </div>
         </div>
@@ -118,18 +118,18 @@ function LoginFormContent() {
           className="w-full mt-2"
         >
           <LogIn className="w-4 h-4 mr-2" />
-          <span>लॉगिन करा (Log In)</span>
+          <span>{t("auth.loginButton")}</span>
         </Button>
       </form>
 
       <div className="pt-4 border-t border-krishi-border/80 text-center space-y-3">
         <p className="text-xs text-krishi-textMuted">
-          नवीन खाते उघडायचे आहे?{" "}
+          {t("auth.registerPrompt")}{" "}
           <Link
             href="/register"
             className="font-bold text-krishi-deepGreen hover:underline inline-flex items-center gap-1"
           >
-            येथे नोंदणी करा (Register)
+            {t("auth.registerLink")}
           </Link>
         </p>
 
@@ -137,11 +137,8 @@ function LoginFormContent() {
         <div className="p-3 bg-krishi-ivory-100 rounded-xl text-left border border-krishi-border text-[11px] text-krishi-textMuted space-y-1">
           <div className="font-bold text-krishi-deepGreen flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-krishi-deepGreen" />
-            <span>सुरक्षित प्रमाणीकरण (Supabase Auth & RLS)</span>
+            <span>{t("auth.secureAuthNotice")}</span>
           </div>
-          <p>
-            क्लाउड प्रमाणीकरणासाठी `.env.local` मध्ये Supabase क्रेडेंशियल्स आवश्यक आहेत.
-          </p>
         </div>
       </div>
     </Card>
@@ -149,11 +146,12 @@ function LoginFormContent() {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   return (
     <Suspense
       fallback={
         <Card className="border-krishi-border shadow-card p-8 text-center text-sm text-krishi-textMuted">
-          माहिती लोड होत आहे... (Loading Login...)
+          {t("auth.loadingLogin")}
         </Card>
       }
     >

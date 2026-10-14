@@ -370,6 +370,155 @@ for (const section of ["weather", "ai"]) {
 }
 
 // ==========================================
+// 6. Progressive Web App (PWA) & Mobile Navigation Suite
+// ==========================================
+console.log("\n6. PWA Manifest, Service Worker Security & Mobile Experience:");
+
+// 6.1 Web App Manifest Verification
+const manifestPath = "public/manifest.json";
+assert(existsSync(manifestPath), "Web app manifest exists at public/manifest.json");
+const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+
+assert(manifest.name && manifest.name.includes("KrishiConnect"), "Manifest defines valid application name");
+assert(manifest.short_name === "KrishiConnect", "Manifest defines concise short_name");
+assert(manifest.start_url === "/", "Manifest start_url is root (/)");
+assert(manifest.display === "standalone", "Manifest display mode is standalone");
+assert(manifest.theme_color === "#185C37", "Manifest theme_color matches Krishi brand green (#185C37)");
+assert(manifest.background_color === "#F7F5EE", "Manifest background_color matches warm ivory (#F7F5EE)");
+
+// Check manifest icons
+const icon192 = manifest.icons.find((i) => i.sizes === "192x192");
+const icon512 = manifest.icons.find((i) => i.sizes === "512x512");
+assert(icon192 && existsSync(`public${icon192.src}`), "192x192 PNG icon exists on disk");
+assert(icon512 && existsSync(`public${icon512.src}`), "512x512 PNG icon exists on disk");
+assert(manifest.icons.some((i) => i.purpose && i.purpose.includes("maskable")), "Manifest provides maskable icon for Android adaptive icons");
+
+// 6.2 Service Worker Security & Privacy Audit
+const swPath = "public/sw.js";
+assert(existsSync(swPath), "Service worker exists at public/sw.js");
+const swContent = readFileSync(swPath, "utf-8");
+
+assert(swContent.includes("/api/"), "Service worker excludes API routes from cache");
+assert(swContent.includes("/auth/"), "Service worker excludes auth endpoints from cache");
+assert(swContent.includes("supabase.co"), "Service worker strictly excludes Supabase cloud endpoints from shared cache");
+assert(swContent.includes("/offline"), "Service worker provides offline fallback (/offline)");
+
+// 6.3 Mobile Navigation & Farmer Dashboard Hub
+const bottomNavContent = readFileSync("src/components/layout/BottomNavigation.tsx", "utf-8");
+assert(bottomNavContent.includes("safe-area-inset-bottom"), "BottomNavigation supports device safe-area insets");
+assert(bottomNavContent.includes("aria-current"), "BottomNavigation provides accessible active-state indicators");
+
+const aiModalPath = "src/features/ai/AiConsultationModal.tsx";
+assert(existsSync(aiModalPath), "AI consultation modal component exists for mobile agronomist advice");
+
+const homeDashboardContent = readFileSync("src/app/(dashboard)/home/page.tsx", "utf-8");
+assert(homeDashboardContent.includes("AiConsultationModal"), "Home screen integrates AI consultation entry point");
+assert(homeDashboardContent.includes("getWeatherAction"), "Home screen integrates agro-meteorological weather card");
+assert(homeDashboardContent.includes("farming.addCrop"), "Home screen provides quick action for adding crops");
+
+const installPromptPath = "src/components/layout/InstallPwaPrompt.tsx";
+assert(existsSync(installPromptPath), "InstallPwaPrompt component exists for beforeinstallprompt handling");
+
+// ==========================================
+// 7. Full App-Wide Localization & Secure Farm Deletion
+// ==========================================
+console.log("\n7. App-Wide Localization & Secure Farm Deletion Verification:");
+
+// 7.1 Locale files existence and 100% key parity across mr, hi, en
+const mrLocale = JSON.parse(readFileSync("src/locales/mr.json", "utf-8"));
+const hiLocale = JSON.parse(readFileSync("src/locales/hi.json", "utf-8"));
+const enLocale = JSON.parse(readFileSync("src/locales/en.json", "utf-8"));
+
+assert(mrLocale && hiLocale && enLocale, "All three locale dictionaries (mr, hi, en) are valid JSON");
+
+function getAllKeys(obj, prefix = "") {
+  return Object.keys(obj).reduce((res, el) => {
+    if (Array.isArray(obj[el])) {
+      return res;
+    } else if (typeof obj[el] === "object" && obj[el] !== null) {
+      return [...res, ...getAllKeys(obj[el], prefix + el + ".")];
+    }
+    return [...res, prefix + el];
+  }, []);
+}
+
+const enKeys = new Set(getAllKeys(enLocale));
+const mrKeys = new Set(getAllKeys(mrLocale));
+const hiKeys = new Set(getAllKeys(hiLocale));
+
+assert(enKeys.size > 200, `Rich dictionary coverage: English has ${enKeys.size} keys`);
+
+// Check missing keys in Marathi
+const missingInMr = [...enKeys].filter((k) => !mrKeys.has(k));
+assert(missingInMr.length === 0, `Marathi dictionary has 100% key parity with English (${missingInMr.length} missing: ${missingInMr.slice(0, 5).join(", ")})`);
+
+// Check missing keys in Hindi
+const missingInHi = [...enKeys].filter((k) => !hiKeys.has(k));
+assert(missingInHi.length === 0, `Hindi dictionary has 100% key parity with English (${missingInHi.length} missing: ${missingInHi.slice(0, 5).join(", ")})`);
+
+// 7.2 Deletion-specific localization keys in all three languages
+const deleteKeys = [
+  "farming.deleteFarmTitle",
+  "farming.deleteFarmSubtitle",
+  "farming.deleteFarmWarning",
+  "farming.deleteFarmConsequences",
+  "farming.confirmDeleteFarm",
+  "farming.deletingFarm",
+  "farming.deleteFarmSuccess",
+  "farming.deleteFarmError",
+  "farming.deleteFarmAction",
+  "farming.acresUnit",
+  "farming.fields",
+  "farming.crops",
+  "farming.tasks",
+  "common.cancel"
+];
+
+for (const dk of deleteKeys) {
+  assert(enKeys.has(dk), `English contains delete key: ${dk}`);
+  assert(mrKeys.has(dk), `Marathi contains delete key: ${dk}`);
+  assert(hiKeys.has(dk), `Hindi contains delete key: ${dk}`);
+}
+
+// 7.3 I18n Provider & SSR Hydration Guard
+const i18nContent = readFileSync("src/lib/i18n.tsx", "utf-8");
+assert(i18nContent.includes("krishiconnect_lang="), "I18nProvider persists language preference via cookie");
+assert(i18nContent.includes("document.documentElement.lang"), "I18nProvider synchronizes HTML lang attribute dynamically");
+assert(i18nContent.includes("initialLanguage"), "I18nProvider accepts initialLanguage from SSR to prevent hydration mismatch");
+assert(i18nContent.includes("formatNumber"), "I18n provides locale-aware number formatting");
+assert(i18nContent.includes("formatDate"), "I18n provides locale-aware date formatting");
+
+const rootLayoutContent = readFileSync("src/app/layout.tsx", "utf-8");
+assert(rootLayoutContent.includes("cookies()"), "Root layout reads language cookie for server-side rendering");
+assert(rootLayoutContent.includes("<I18nProvider initialLanguage="), "Root layout passes initialLanguage to eliminate flash of wrong language");
+
+// 7.4 Delete Farm Modal & Security Guardrails
+const deleteModalPath = "src/features/crops/DeleteFarmModal.tsx";
+assert(existsSync(deleteModalPath), "DeleteFarmModal component exists");
+const deleteModalContent = readFileSync(deleteModalPath, "utf-8");
+assert(deleteModalContent.includes("deleteFarmAction"), "DeleteFarmModal invokes server action deleteFarmAction");
+assert(deleteModalContent.includes("getFarmDependentsAction"), "DeleteFarmModal fetches dependent record counts for user confirmation");
+assert(deleteModalContent.includes("isDeleting"), "DeleteFarmModal prevents duplicate submissions during deletion");
+assert(deleteModalContent.includes('role="dialog"'), "DeleteFarmModal provides accessible dialog role");
+
+// 7.5 Server Actions Ownership & Cascade Deletion
+const cropActionsContent = readFileSync("src/features/crops/actions.ts", "utf-8");
+assert(cropActionsContent.includes("export async function deleteFarmAction"), "Crop actions export deleteFarmAction");
+assert(cropActionsContent.includes("export async function getFarmDependentsAction"), "Crop actions export getFarmDependentsAction");
+assert(cropActionsContent.includes("owner_id !=="), "deleteFarmAction verifies farm ownership server-side");
+assert(cropActionsContent.includes('revalidatePath("/crops")'), "deleteFarmAction triggers revalidation of crops screen");
+assert(cropActionsContent.includes('revalidatePath("/home")'), "deleteFarmAction triggers revalidation of home screen");
+
+// 7.6 Database Schema Cascades & RLS Policy
+const cropMigrationPath = "supabase/migrations/002_crops_and_farms.sql";
+assert(existsSync(cropMigrationPath), "Crop schema migration 002 exists");
+const cropMigrationContent = readFileSync(cropMigrationPath, "utf-8");
+assert(cropMigrationContent.includes("REFERENCES public.farms(id) ON DELETE CASCADE"), "farm_fields table configures ON DELETE CASCADE for farms");
+assert(cropMigrationContent.includes("REFERENCES public.farm_fields(id) ON DELETE CASCADE"), "crop_records table configures ON DELETE CASCADE for fields");
+assert(cropMigrationContent.includes("REFERENCES public.crop_records(id) ON DELETE CASCADE"), "crop_tasks table configures ON DELETE CASCADE for crops");
+assert(cropMigrationContent.includes('CREATE POLICY "Farmers can delete own farms"'), "RLS enforces policy allowing only farm owners to delete their farms");
+
+// ==========================================
 // Summary
 // ==========================================
 console.log("\n========================================================");
@@ -379,3 +528,4 @@ console.log("========================================================\n");
 if (failed > 0) {
   process.exit(1);
 }
+

@@ -16,13 +16,10 @@ import {
   User,
   Globe,
   Shield,
-  Smartphone,
   MapPin,
   Phone,
   CheckCircle,
-  Clock,
   ArrowLeft,
-  Info,
   LogOut,
   LogIn,
   Save,
@@ -42,11 +39,11 @@ export default function ProfilePage() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Form states
-  const [fullName, setFullName] = useState("ज्ञानेश्वर पाटील");
-  const [phoneNumber, setPhoneNumber] = useState("9876543210");
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [district, setDistrict] = useState("Pune");
   const [taluka, setTaluka] = useState("Haveli");
-  const [village, setVillage] = useState("वाघोली");
+  const [village, setVillage] = useState("");
 
   useEffect(() => {
     async function loadSession() {
@@ -107,13 +104,13 @@ export default function ProfilePage() {
       });
 
       if (res.success) {
-        setMessage({ type: "success", text: res.message || "प्रोफाइल जतन केले!" });
+        setMessage({ type: "success", text: t("profile.profileUpdatedSuccess") });
         setIsEditing(false);
       } else {
-        setMessage({ type: "error", text: res.error || "अपडेट अयशस्वी." });
+        setMessage({ type: "error", text: res.error || t("common.error") });
       }
     } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "त्रुटी आली." });
+      setMessage({ type: "error", text: err.message || t("common.error") });
     } finally {
       setIsSaving(false);
     }
@@ -133,30 +130,31 @@ export default function ProfilePage() {
         <div className="flex items-center gap-2">
           <Link
             href="/home"
-            className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-1 -ml-1 rounded-lg"
+            className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 rounded-xl active:bg-krishi-primary-50"
+            aria-label={t("common.back")}
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <h1 className="text-2xl font-extrabold text-krishi-deepGreen">
-              {t("nav.profile")}
+              {t("profile.title")}
             </h1>
             <p className="text-xs sm:text-sm text-krishi-textMuted">
-              वापरकर्ता खाते, भूमिका आणि ॲप प्राधान्ये
+              {t("profile.subtitle")}
             </p>
           </div>
         </div>
 
         {user ? (
-          <Button variant="outline" size="sm" onClick={handleLogout}>
+          <Button variant="outline" size="sm" onClick={handleLogout} className="min-h-[44px]">
             <LogOut className="w-4 h-4 mr-1.5" />
-            <span>लॉगआउट (Log Out)</span>
+            <span>{t("profile.logout")}</span>
           </Button>
         ) : (
           <Link href="/login">
-            <Button variant="primary" size="sm">
+            <Button variant="primary" size="sm" className="min-h-[44px]">
               <LogIn className="w-4 h-4 mr-1.5" />
-              <span>लॉगिन / नोंदणी (Log In / Register)</span>
+              <span>{t("profile.loginRegister")}</span>
             </Button>
           </Link>
         )}
@@ -182,16 +180,18 @@ export default function ProfilePage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-krishi-deepGreen text-krishi-warmIvory flex items-center justify-center font-extrabold text-2xl shadow-subtle flex-shrink-0">
-              {fullName ? fullName.charAt(0) : "कृ"}
+              {fullName ? fullName.charAt(0) : "🌱"}
             </div>
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-xl font-bold text-krishi-textMain">{fullName}</h2>
+                <h2 className="text-xl font-bold text-krishi-textMain">
+                  {fullName || t("dashboard.farmerGreeting")}
+                </h2>
                 <Badge variant="primary" size="sm">
                   <CheckCircle className="w-3 h-3" />{" "}
                   {roles.length > 0
                     ? roles.map((r) => r.role).join(", ")
-                    : "शेतकरी (Farmer)"}
+                    : t("profile.userRoleFarmer")}
                 </Badge>
               </div>
               <div className="flex flex-wrap items-center gap-3 text-xs text-krishi-textMuted">
@@ -211,8 +211,9 @@ export default function ProfilePage() {
             variant="outline"
             size="sm"
             onClick={() => setIsEditing(!isEditing)}
+            className="min-h-[44px]"
           >
-            {isEditing ? "रद्द करा (Cancel)" : "माहिती बदला (Edit Profile)"}
+            {isEditing ? t("profile.cancelEdit") : t("profile.editProfile")}
           </Button>
         </div>
 
@@ -223,26 +224,26 @@ export default function ProfilePage() {
             className="pt-4 border-t border-krishi-border/80 space-y-3 bg-krishi-ivory-50 p-4 rounded-xl"
           >
             <h4 className="font-bold text-sm text-krishi-deepGreen">
-              प्रोफाइल तपशील संपादित करा
+              {t("profile.editProfile")}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
-                label="पूर्ण नाव"
+                label={t("profile.fullName")}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
               />
               <Input
-                label="मोबाईल नंबर"
+                label={t("profile.phoneNumber")}
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="१० अंकी नंबर"
+                placeholder="10 digits"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="space-y-1.5 text-left">
                 <label className="block text-sm font-semibold text-krishi-textMain">
-                  जिल्हा
+                  {t("profile.district")}
                 </label>
                 <select
                   value={district}
@@ -255,7 +256,7 @@ export default function ProfilePage() {
                 >
                   {Object.entries(MAHARASHTRA_DISTRICTS).map(([key, item]) => (
                     <option key={key} value={key}>
-                      {item.nameMr} ({item.nameEn})
+                      {language === "en" ? item.nameEn : `${item.nameMr} (${item.nameEn})`}
                     </option>
                   ))}
                 </select>
@@ -263,7 +264,7 @@ export default function ProfilePage() {
 
               <div className="space-y-1.5 text-left">
                 <label className="block text-sm font-semibold text-krishi-textMain">
-                  तालुका
+                  {t("profile.taluka")}
                 </label>
                 <select
                   value={taluka}
@@ -272,17 +273,17 @@ export default function ProfilePage() {
                 >
                   {talukas.map((tItem) => (
                     <option key={tItem.nameEn} value={tItem.nameEn}>
-                      {tItem.nameMr} ({tItem.nameEn})
+                      {language === "en" ? tItem.nameEn : `${tItem.nameMr} (${tItem.nameEn})`}
                     </option>
                   ))}
                 </select>
               </div>
 
               <Input
-                label="गाव (Village)"
+                label={t("profile.village")}
                 value={village}
                 onChange={(e) => setVillage(e.target.value)}
-                placeholder="गावाचे नाव"
+                placeholder={t("profile.village")}
               />
             </div>
 
@@ -291,10 +292,10 @@ export default function ProfilePage() {
               variant="primary"
               size="md"
               isLoading={isSaving}
-              className="mt-2"
+              className="mt-2 min-h-[44px]"
             >
               <Save className="w-4 h-4 mr-1.5" />
-              <span>बदल जतन करा (Save Changes)</span>
+              <span>{isSaving ? t("profile.savingProfile") : t("profile.saveProfile")}</span>
             </Button>
           </form>
         )}
@@ -311,9 +312,9 @@ export default function ProfilePage() {
         <CardContent>
           <div className="grid grid-cols-3 gap-2 max-w-md">
             {[
-              { code: "mr" as SupportedLanguage, label: "मराठी (Default)" },
-              { code: "hi" as SupportedLanguage, label: "हिंदी" },
-              { code: "en" as SupportedLanguage, label: "English" },
+              { code: "mr" as SupportedLanguage, label: t("languages.mr") },
+              { code: "hi" as SupportedLanguage, label: t("languages.hi") },
+              { code: "en" as SupportedLanguage, label: t("languages.en") },
             ].map((item) => (
               <button
                 key={item.code}
@@ -338,9 +339,9 @@ export default function ProfilePage() {
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-krishi-deepGreen" />
             <div>
-              <CardTitle className="text-base">भूमिका व पडताळणी स्थिती (RBAC)</CardTitle>
+              <CardTitle className="text-base">RBAC</CardTitle>
               <CardDescription>
-                सर्व्हर-स्तरीय Supabase RLS द्वारे नियंत्रित
+                {t("auth.secureAuthNotice")}
               </CardDescription>
             </div>
           </div>
@@ -375,7 +376,7 @@ export default function ProfilePage() {
               {
                 role: "admin",
                 label: t("roles.admin"),
-                status: "प्रशासक नियंत्रण (Admin Restricted)",
+                status: t("roles.verified"),
                 variant: "neutral" as const,
               },
             ].map((rItem) => (

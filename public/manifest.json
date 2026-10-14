@@ -1,13 +1,18 @@
 {
+  "id": "/krishiconnect-pwa",
   "name": "कृषीकनेक्ट — KrishiConnect",
   "short_name": "KrishiConnect",
-  "description": "शेतकऱ्यांना जोडा, एकत्र वाढा — Farmer-First Digital Agriculture Platform",
+  "description": "शेतकऱ्यांना जोडा, एकत्र वाढा — Farmer-First Digital Agriculture Platform for Maharashtra",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#F7F5EE",
   "theme_color": "#185C37",
   "orientation": "portrait-primary",
   "lang": "mr",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "business"],
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -16,25 +21,46 @@
       "purpose": "any"
     },
     {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "माझी पिके (My Crops)",
+      "short_name": "पिके",
       "url": "/crops",
       "description": "पिकांचे व्यवस्थापन व सल्ला"
     },
     {
+      "name": "हवामान अंदाज (Weather)",
+      "short_name": "हवामान",
+      "url": "/weather",
+      "description": "कृषी हवामान व स्थानिक अंदाज"
+    },
+    {
       "name": "शेतकरी मंच (Community)",
+      "short_name": "मंच",
       "url": "/community",
       "description": "शेतकरी चर्चा व प्रश्नोत्तरे"
     },
     {
       "name": "बाजार (Marketplace)",
+      "short_name": "बाजार",
       "url": "/marketplace",
       "description": "थेट शेतीमाल खरेदी-विक्री"
     }

@@ -10,7 +10,9 @@ export type SupportedLanguage = "mr" | "hi" | "en";
 interface I18nContextType {
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
+  formatNumber: (num: number) => string;
+  formatDate: (date: string | Date | number, options?: Intl.DateTimeFormatOptions) => string;
 }
 
 const translations: Record<SupportedLanguage, Record<string, any>> = {
@@ -23,35 +25,61 @@ const I18nContext = createContext<I18nContextType>({
   language: "mr",
   setLanguage: () => {},
   t: (key) => key,
+  formatNumber: (num) => String(num),
+  formatDate: (date) => String(date),
 });
 
-const STORAGE_KEY = "krishiconnect_lang";
+export const STORAGE_KEY = "krishiconnect_lang";
 
-export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Marathi is the blueprint-mandated default
-  const [language, setLanguageState] = useState<SupportedLanguage>("mr");
+const LOCALE_MAP: Record<SupportedLanguage, string> = {
+  mr: "mr-IN",
+  hi: "hi-IN",
+  en: "en-IN",
+};
+
+export const I18nProvider: React.FC<{
+  children: ReactNode;
+  initialLanguage?: SupportedLanguage;
+}> = ({ children, initialLanguage = "mr" }) => {
+  const [language, setLanguageState] = useState<SupportedLanguage>(() => {
+    if (initialLanguage === "hi" || initialLanguage === "en" || initialLanguage === "mr") {
+      return initialLanguage;
+    }
+    return "mr";
+  });
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as SupportedLanguage;
       if (saved && (saved === "mr" || saved === "hi" || saved === "en")) {
         setLanguageState(saved);
+        if (typeof document !== "undefined") {
+          document.documentElement.lang = saved;
+        }
+      } else {
+        if (typeof document !== "undefined") {
+          document.documentElement.lang = initialLanguage;
+        }
       }
     } catch {
       // LocalStorage unavailable in certain environments
     }
-  }, []);
+  }, [initialLanguage]);
 
   const setLanguage = (lang: SupportedLanguage) => {
     setLanguageState(lang);
     try {
       localStorage.setItem(STORAGE_KEY, lang);
+      if (typeof document !== "undefined") {
+        document.cookie = `krishiconnect_lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+        document.documentElement.lang = lang;
+      }
     } catch {
       // Ignore storage errors
     }
   };
 
-  const t = (path: string): string => {
+  const t = (path: string, params?: Record<string, string | number>): string => {
     const keys = path.split(".");
     let current: any = translations[language];
 
@@ -65,18 +93,53 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (fallback && typeof fallback === "object" && fbKey in fallback) {
             fallback = fallback[fbKey];
           } else {
-            return path;
+            return interpolate(path, params);
           }
         }
-        return typeof fallback === "string" ? fallback : path;
+        return interpolate(typeof fallback === "string" ? fallback : path, params);
       }
     }
 
-    return typeof current === "string" ? current : path;
+    const rawResult = typeof current === "string" ? current : path;
+    return interpolate(rawResult, params);
+  };
+
+  const interpolate = (str: string, params?: Record<string, string | number>): string => {
+    if (!params) return str;
+    let result = str;
+    for (const [k, v] of Object.entries(params)) {
+      result = result
+        .replace(new RegExp(`\\{\\{${k}\\}\\}`, "g"), String(v))
+        .replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+    }
+    return result;
+  };
+
+  const formatNumber = (num: number): string => {
+    try {
+      const locale = LOCALE_MAP[language] || "mr-IN";
+      return new Intl.NumberFormat(locale).format(num);
+    } catch {
+      return String(num);
+    }
+  };
+
+  const formatDate = (
+    dateInput: string | Date | number,
+    options?: Intl.DateTimeFormatOptions
+  ): string => {
+    try {
+      const d = typeof dateInput === "object" ? dateInput : new Date(dateInput);
+      if (isNaN(d.getTime())) return String(dateInput);
+      const locale = LOCALE_MAP[language] || "mr-IN";
+      return new Intl.DateTimeFormat(locale, options || { dateStyle: "medium" }).format(d);
+    } catch {
+      return String(dateInput);
+    }
   };
 
   return (
-    <I18nContext.Provider value={{ language, setLanguage, t }}>
+    <I18nContext.Provider value={{ language, setLanguage, t, formatNumber, formatDate }}>
       {children}
     </I18nContext.Provider>
   );

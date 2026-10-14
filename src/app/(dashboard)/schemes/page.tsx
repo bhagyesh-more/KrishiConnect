@@ -73,7 +73,8 @@ export default function SchemesPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/home"
-              className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-1 -ml-1 rounded-lg"
+              className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 rounded-xl active:bg-krishi-primary-50"
+              aria-label="Back to home"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>

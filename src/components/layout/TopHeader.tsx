@@ -29,23 +29,23 @@ export const TopHeader: React.FC = () => {
         {/* Brand Link */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen rounded-xl p-1"
+          className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen rounded-xl p-1 min-h-[44px] shrink-0"
         >
-          <div className="w-10 h-10 rounded-xl bg-krishi-deepGreen flex items-center justify-center text-krishi-warmIvory shadow-subtle group-hover:bg-krishi-primary-600 transition-colors">
-            <Sprout className="w-6 h-6 text-krishi-leafGreen" />
+          <div className="w-10 h-10 rounded-xl bg-krishi-deepGreen flex items-center justify-center text-krishi-warmIvory shadow-subtle group-hover:bg-krishi-primary-600 transition-colors shrink-0">
+            <Sprout className="w-5 h-5 text-krishi-leafGreen" />
           </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-base sm:text-lg text-krishi-deepGreen tracking-tight leading-tight">
+          <div className="flex flex-col min-w-0">
+            <span className="font-extrabold text-sm sm:text-base text-krishi-deepGreen tracking-tight leading-tight truncate">
               {t("app.name")}
             </span>
-            <span className="text-[10px] sm:text-xs text-krishi-textMuted leading-none hidden xs:inline-block">
+            <span className="text-[10px] text-krishi-textMuted leading-none hidden sm:inline-block truncate">
               {t("app.tagline")}
             </span>
           </div>
         </Link>
 
-        {/* Right Controls: Online Status & Language Switcher */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Right Controls: Online Status & Language Switcher & Profile */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* Connectivity Pill */}
           <div
             className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
@@ -70,18 +70,18 @@ export const TopHeader: React.FC = () => {
             <label htmlFor="language-select" className="sr-only">
               {t("languages.select")}
             </label>
-            <div className="flex items-center bg-krishi-ivory-100 hover:bg-krishi-ivory-200 border border-krishi-border rounded-xl px-2.5 py-1.5 transition-colors focus-within:ring-2 focus-within:ring-krishi-deepGreen">
-              <Globe className="w-4 h-4 text-krishi-deepGreen mr-1.5 flex-shrink-0" />
+            <div className="flex items-center bg-krishi-ivory-100 hover:bg-krishi-ivory-200 border border-krishi-border rounded-xl px-2 py-1 min-h-[44px] transition-colors focus-within:ring-2 focus-within:ring-krishi-deepGreen">
+              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-krishi-deepGreen mr-1 shrink-0" />
               <select
                 id="language-select"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value as SupportedLanguage)}
-                className="bg-transparent text-xs sm:text-sm font-semibold text-krishi-deepGreen focus:outline-none cursor-pointer pr-1"
+                className="bg-transparent text-xs font-bold text-krishi-deepGreen focus:outline-none cursor-pointer pr-0.5"
                 aria-label={t("languages.select")}
               >
                 <option value="mr">मराठी</option>
                 <option value="hi">हिंदी</option>
-                <option value="en">English</option>
+                <option value="en">EN</option>
               </select>
             </div>
           </div>
@@ -90,7 +90,7 @@ export const TopHeader: React.FC = () => {
           <Link
             href="/profile"
             aria-label={t("nav.profile")}
-            className="flex items-center justify-center w-9 h-9 rounded-xl bg-krishi-ivory-100 hover:bg-krishi-primary-50 border border-krishi-border text-krishi-deepGreen transition-colors focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen"
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-xl bg-krishi-ivory-100 hover:bg-krishi-primary-50 border border-krishi-border text-krishi-deepGreen transition-colors focus:outline-none focus:ring-2 focus:ring-krishi-deepGreen"
           >
             <User className="w-4 h-4" />
           </Link>

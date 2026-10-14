@@ -82,6 +82,147 @@ export async function createFarmAction(input: FarmInput): Promise<ActionResult> 
   return { success: true, message: "शेत यशस्वीरित्या नोंदवले गेले!", data };
 }
 
+export async function getFarmDependentsAction(farmId: string): Promise<ActionResult<{
+  farmName: string;
+  fieldsCount: number;
+  cropsCount: number;
+  tasksCount: number;
+}>> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "कृपया प्रथम लॉगिन करा (Please log in first)" };
+  }
+
+  const { data: farm, error: farmError } = await (supabase.from("farms") as any)
+    .select("id, farm_name, owner_id")
+    .eq("id", farmId)
+    .single();
+
+  if (farmError || !farm) {
+    return { success: false, error: "शेत सापडले नाही (Farm not found)" };
+  }
+
+  if (farm.owner_id !== user.id) {
+    return { success: false, error: "तुम्हाला या शेताची माहिती पाहण्याची परवानगी नाही (Unauthorized)" };
+  }
+
+  const { data: fields } = await (supabase.from("farm_fields") as any)
+    .select("id")
+    .eq("farm_id", farmId);
+
+  const fieldIds = (fields || []).map((f: any) => f.id);
+  let cropsCount = 0;
+  let tasksCount = 0;
+
+  if (fieldIds.length > 0) {
+    const { data: crops } = await (supabase.from("crop_records") as any)
+      .select("id")
+      .in("field_id", fieldIds);
+
+    cropsCount = crops?.length || 0;
+    const cropIds = (crops || []).map((c: any) => c.id);
+
+    if (cropIds.length > 0) {
+      const { count } = await (supabase.from("crop_tasks") as any)
+        .select("id", { count: "exact", head: true })
+        .in("crop_record_id", cropIds);
+      tasksCount = count || 0;
+    }
+  }
+
+  return {
+    success: true,
+    data: {
+      farmName: farm.farm_name,
+      fieldsCount: fields?.length || 0,
+      cropsCount,
+      tasksCount,
+    },
+  };
+}
+
+export async function deleteFarmAction(farmId: string): Promise<ActionResult<{
+  deletedFarmId: string;
+  farmName: string;
+  deletedFieldsCount: number;
+  deletedCropsCount: number;
+  deletedTasksCount: number;
+}>> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "कृपया प्रथम लॉगिन करा (Please log in first)" };
+  }
+
+  // 1. Explicitly check ownership on the server
+  const { data: farm, error: fetchError } = await (supabase.from("farms") as any)
+    .select("id, farm_name, owner_id")
+    .eq("id", farmId)
+    .single();
+
+  if (fetchError || !farm) {
+    return { success: false, error: "शेत सापडले नाही किंवा आधीच हटवले गेले आहे (Farm not found or already deleted)" };
+  }
+
+  if (farm.owner_id !== user.id) {
+    return { success: false, error: "तुम्हाला हे शेत हटवण्याची परवानगी नाही (Unauthorized: You do not own this farm)" };
+  }
+
+  // 2. Query dependent counts to return informative report
+  const { data: fields } = await (supabase.from("farm_fields") as any)
+    .select("id")
+    .eq("farm_id", farmId);
+
+  const fieldIds = (fields || []).map((f: any) => f.id);
+  let cropCount = 0;
+  let taskCount = 0;
+
+  if (fieldIds.length > 0) {
+    const { data: crops } = await (supabase.from("crop_records") as any)
+      .select("id")
+      .in("field_id", fieldIds);
+
+    cropCount = crops?.length || 0;
+    const cropIds = (crops || []).map((c: any) => c.id);
+
+    if (cropIds.length > 0) {
+      const { count } = await (supabase.from("crop_tasks") as any)
+        .select("id", { count: "exact", head: true })
+        .in("crop_record_id", cropIds);
+      taskCount = count || 0;
+    }
+  }
+
+  // 3. Delete farm record (Cascade in PostgreSQL removes dependent farm_fields, crop_records, and crop_tasks)
+  // RLS policy: Farmers can delete own farms USING (auth.uid() = owner_id)
+  const { error: deleteError } = await (supabase.from("farms") as any)
+    .delete()
+    .eq("id", farmId)
+    .eq("owner_id", user.id);
+
+  if (deleteError) {
+    return { success: false, error: deleteError.message };
+  }
+
+  revalidatePath("/crops");
+  revalidatePath("/home");
+
+  return {
+    success: true,
+    message: "शेत आणि संबंधित सर्व नोंदी यशस्वीरित्या हटवण्यात आल्या. (Farm deleted successfully)",
+    data: {
+      deletedFarmId: farmId,
+      farmName: farm.farm_name,
+      deletedFieldsCount: fields?.length || 0,
+      deletedCropsCount: cropCount,
+      deletedTasksCount: taskCount,
+    },
+  };
+}
+
 // ==============================================================================
 // 2. Fields Actions
 // ==============================================================================

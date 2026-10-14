@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
@@ -26,12 +26,12 @@ export default function ForgotPasswordPage() {
     try {
       const res = await resetPasswordAction({ email });
       if (res.success) {
-        setSuccessMsg(res.message || "रीसेट लिंक पाठवण्यात आली.");
+        setSuccessMsg(res.message || t("auth.resetLinkSent"));
       } else {
-        setErrorMsg(res.error || "विनंती अयशस्वी झाली.");
+        setErrorMsg(res.error || t("common.error"));
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "काहीतरी चूक झाली.");
+      setErrorMsg(err.message || t("common.error"));
     } finally {
       setIsLoading(false);
     }
@@ -44,10 +44,10 @@ export default function ForgotPasswordPage() {
           <KeyRound className="w-6 h-6" />
         </div>
         <CardTitle className="text-2xl font-black text-krishi-deepGreen">
-          पासवर्ड पुनर्प्राप्ती (Reset Password)
+          {t("auth.forgotPasswordTitle")}
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          आपला नोंदणीकृत ईमेल प्रविष्ट करा, आम्ही पासवर्ड रीसेट लिंक पाठवू.
+          {t("auth.forgotPasswordSubtitle")}
         </CardDescription>
       </CardHeader>
 
@@ -65,11 +65,11 @@ export default function ForgotPasswordPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="नोंदणीकृत ईमेल (Registered Email)"
+          label={t("auth.registeredEmailLabel")}
           type="email"
           required
           autoComplete="email"
-          placeholder="shree@krishi.demo"
+          placeholder={t("auth.emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
           className="w-full mt-2"
         >
           <Mail className="w-4 h-4 mr-2" />
-          <span>रीसेट लिंक पाठवा (Send Reset Link)</span>
+          <span>{t("auth.sendResetLink")}</span>
         </Button>
       </form>
 
@@ -92,7 +92,7 @@ export default function ForgotPasswordPage() {
           className="inline-flex items-center gap-1.5 text-xs font-bold text-krishi-deepGreen hover:underline"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>लॉगिन पानावर परत जा (Back to Login)</span>
+          <span>{t("auth.backToLogin")}</span>
         </Link>
       </div>
     </Card>

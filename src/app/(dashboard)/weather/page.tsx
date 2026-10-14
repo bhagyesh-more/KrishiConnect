@@ -62,12 +62,13 @@ export default function WeatherPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/home"
-            className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-1 -ml-1 rounded-lg"
+            className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 rounded-xl active:bg-krishi-primary-50"
+            aria-label="Back to home"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-krishi-deepGreen">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-krishi-deepGreen">
               {t("nav.weather")} व कृषी हवामान सल्ला
             </h1>
             <p className="text-xs sm:text-sm text-krishi-textMuted">
@@ -79,12 +80,12 @@ export default function WeatherPage() {
         {/* Location Selector & Refresh */}
         <div className="flex items-center gap-2">
           <div className="relative">
-            <MapPin className="w-4 h-4 text-emerald-700 absolute left-3 top-3" />
+            <MapPin className="w-4 h-4 text-emerald-700 absolute left-3 top-3.5" />
             <select
               value={selectedDistrict}
               onChange={handleDistrictChange}
               disabled={loading}
-              className="pl-9 pr-8 py-2 text-xs sm:text-sm font-semibold border border-stone-300 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="pl-9 pr-8 py-2.5 min-h-[44px] text-xs sm:text-sm font-semibold border border-stone-300 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             >
               {Object.entries(MAHARASHTRA_WEATHER_LOCATIONS).map(([key, loc]) => (
                 <option key={key} value={key}>
@@ -100,7 +101,7 @@ export default function WeatherPage() {
             onClick={() => loadWeather(selectedDistrict)}
             disabled={loading}
             title="रिफ्रेश करा"
-            className="h-9 px-3"
+            className="min-h-[44px] min-w-[44px] px-3 flex items-center justify-center rounded-xl"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-emerald-600" : ""}`} />
           </Button>

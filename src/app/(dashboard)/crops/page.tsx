@@ -17,6 +17,7 @@ import { CropModal } from "@/features/crops/CropModal";
 import { TaskModal } from "@/features/crops/TaskModal";
 import { CropTimeline } from "@/features/crops/CropTimeline";
 import { CropGuideDrawer } from "@/features/crops/CropGuideDrawer";
+import { DeleteFarmModal } from "@/features/crops/DeleteFarmModal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
@@ -42,6 +43,7 @@ import {
   Scissors,
   Eye,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 
 export default function CropsPage() {
@@ -64,6 +66,8 @@ export default function CropsPage() {
   const [isFarmModalOpen, setIsFarmModalOpen] = useState(false);
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
   const [selectedFarmForField, setSelectedFarmForField] = useState<any | null>(null);
+  const [isDeleteFarmModalOpen, setIsDeleteFarmModalOpen] = useState(false);
+  const [farmToDelete, setFarmToDelete] = useState<any | null>(null);
   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [taskModalCropId, setTaskModalCropId] = useState<string | undefined>(undefined);
@@ -123,6 +127,14 @@ export default function CropsPage() {
     } catch {
       loadData();
     }
+  };
+
+  const handleDeleteFarmSuccess = (deletedId: string) => {
+    setFarms((prev) => prev.filter((f) => f.id !== deletedId));
+    if (selectedFarmForField?.id === deletedId) {
+      setSelectedFarmForField(null);
+    }
+    loadData();
   };
 
   const getCategoryIcon = (category: string) => {
@@ -396,7 +408,7 @@ export default function CropsPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-krishi-deepGreen">
-              नोंदवलेली शेते व तुकडे (Farms & Fields)
+              {t("farming.tabFarms")}
             </h2>
             <Button
               variant="primary"
@@ -404,7 +416,7 @@ export default function CropsPage() {
               onClick={() => setIsFarmModalOpen(true)}
             >
               <Plus className="w-4 h-4 mr-1" />
-              <span>नवीन शेत जोडा</span>
+              <span>{t("farming.addFarm")}</span>
             </Button>
           </div>
 
@@ -414,13 +426,13 @@ export default function CropsPage() {
                 <Layers className="w-8 h-8 text-krishi-leafGreen" />
               </div>
               <h3 className="text-base font-bold text-krishi-deepGreen">
-                कोणतेही शेत नोंदवलेले नाही
+                {t("farming.noFarms")}
               </h3>
               <p className="text-xs text-krishi-gray">
-                तुमच्या शेताचे नाव, जिल्हा, एकूण क्षेत्रफळ आणि जलस्त्रोत नोंदवून सुरुवात करा.
+                {t("farming.deleteFarmConsequences")}
               </p>
               <Button variant="primary" onClick={() => setIsFarmModalOpen(true)}>
-                पहिले शेत जोडा
+                {t("farming.firstFarmAction")}
               </Button>
             </div>
           ) : (
@@ -432,14 +444,14 @@ export default function CropsPage() {
                     key={farm.id}
                     className="bg-white rounded-2xl border border-krishi-lightGray/70 p-5 shadow-sm space-y-4"
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center space-x-2">
                           <h3 className="text-base font-bold text-krishi-deepGreen">
                             {farm.farm_name}
                           </h3>
                           <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-krishi-leafGreen/20 text-krishi-deepGreen">
-                            {farm.total_area_acres} एकर
+                            {farm.total_area_acres} {t("farming.acresUnit")}
                           </span>
                         </div>
                         <p className="text-xs text-krishi-gray flex items-center mt-1">
@@ -449,29 +461,45 @@ export default function CropsPage() {
                         </p>
                       </div>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedFarmForField(farm);
-                          setIsFieldModalOpen(true);
-                        }}
-                        className="text-xs py-1 h-auto"
-                      >
-                        + तुकडा जोडा
-                      </Button>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedFarmForField(farm);
+                            setIsFieldModalOpen(true);
+                          }}
+                          className="text-xs py-1 h-auto min-h-[36px]"
+                        >
+                          + {t("farming.addField")}
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setFarmToDelete(farm);
+                            setIsDeleteFarmModalOpen(true);
+                          }}
+                          aria-label={`${t("farming.deleteFarmAction")} ${farm.farm_name}`}
+                          className="text-xs py-1 h-auto min-h-[36px] text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 mr-1" />
+                          <span>{t("farming.deleteFarmAction")}</span>
+                        </Button>
+                      </div>
                     </div>
 
                     {/* Farm Attributes */}
                     <div className="flex flex-wrap gap-2 text-xs text-krishi-charcoal">
                       {farm.soil_type && (
                         <span className="bg-krishi-warmIvory px-2.5 py-1 rounded-lg border border-krishi-lightGray/50">
-                          माती: {farm.soil_type}
+                          {t("farming.soilTypeLabel")}: {farm.soil_type}
                         </span>
                       )}
                       {farm.irrigation_source && farm.irrigation_source.length > 0 && (
                         <span className="bg-krishi-warmIvory px-2.5 py-1 rounded-lg border border-krishi-lightGray/50">
-                          पाणी: {farm.irrigation_source.join(", ")}
+                          {t("farming.irrigationSourceLabel")}: {farm.irrigation_source.join(", ")}
                         </span>
                       )}
                     </div>
@@ -736,6 +764,16 @@ export default function CropsPage() {
         isOpen={isFarmModalOpen}
         onClose={() => setIsFarmModalOpen(false)}
         onSuccess={loadData}
+      />
+
+      <DeleteFarmModal
+        isOpen={isDeleteFarmModalOpen}
+        farm={farmToDelete}
+        onClose={() => {
+          setIsDeleteFarmModalOpen(false);
+          setFarmToDelete(null);
+        }}
+        onSuccess={handleDeleteFarmSuccess}
       />
 
       <FieldModal

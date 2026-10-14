@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { createFarmAction } from "./actions";
 import { MAHARASHTRA_DISTRICTS } from "@/features/auth/maharashtraDistricts";
-import { X, Sprout, AlertCircle, CheckCircle2 } from "lucide-react";
+import { X, Sprout, AlertCircle } from "lucide-react";
 
 interface FarmModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface FarmModalProps {
 }
 
 export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  const { t, language } = useTranslation();
   const [farmName, setFarmName] = useState("");
   const [totalAreaAcres, setTotalAreaAcres] = useState<number>(3);
   const [district, setDistrict] = useState("Pune");
@@ -62,17 +64,22 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
         onSuccess();
         onClose();
       } else {
-        setErrorMsg(res.error || "शेत नोंदणी अयशस्वी झाली.");
+        setErrorMsg(res.error || t("common.error"));
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "काहीतरी चूक झाली.");
+      setErrorMsg(err.message || t("common.error"));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="farm-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+    >
       <div className="bg-white w-full max-w-lg rounded-3xl border border-krishi-border shadow-floating overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-krishi-border flex items-center justify-between bg-krishi-ivory-100/60">
@@ -81,17 +88,18 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
               <Sprout className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-krishi-deepGreen">
-                नवीन शेत नोंदवा (Add Farm)
+              <h3 id="farm-modal-title" className="text-base sm:text-lg font-bold text-krishi-deepGreen">
+                {t("farming.addFarm")}
               </h3>
               <p className="text-xs text-krishi-textMuted">
-                आपल्या शेताचा तपशील व क्षेत्रफळ प्रविष्ट करा
+                {t("farming.farmName")} & {t("farming.totalArea")}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl hover:bg-krishi-ivory-200 flex items-center justify-center text-krishi-textMuted transition-colors"
+            aria-label={t("common.close")}
+            className="w-9 h-9 rounded-xl hover:bg-krishi-ivory-200 flex items-center justify-center text-krishi-textMuted transition-colors min-h-[44px] min-w-[44px]"
           >
             <X className="w-5 h-5" />
           </button>
@@ -106,7 +114,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
           )}
 
           <Input
-            label="शेताचे नाव (Farm Name)"
+            label={t("farming.farmName")}
             required
             placeholder="उदा. श्री गणेश कृषी फार्म"
             value={farmName}
@@ -115,7 +123,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
-              label="एकूण क्षेत्र (Total Area in Acres)"
+              label={t("farming.totalArea")}
               type="number"
               step="0.1"
               min="0.1"
@@ -126,7 +134,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
 
             <div className="space-y-1.5 text-left">
               <label className="block text-sm font-semibold text-krishi-textMain">
-                मातीचा प्रकार (Soil Type)
+                {t("farming.soilTypeLabel")}
               </label>
               <select
                 value={soilType}
@@ -145,7 +153,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5 text-left">
               <label className="block text-sm font-semibold text-krishi-textMain">
-                जिल्हा (District)
+                {t("auth.districtLabel")}
               </label>
               <select
                 value={district}
@@ -154,7 +162,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
               >
                 {Object.entries(MAHARASHTRA_DISTRICTS).map(([key, item]) => (
                   <option key={key} value={key}>
-                    {item.nameMr} ({item.nameEn})
+                    {language === "en" ? item.nameEn : `${item.nameMr} (${item.nameEn})`}
                   </option>
                 ))}
               </select>
@@ -162,7 +170,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
 
             <div className="space-y-1.5 text-left">
               <label className="block text-sm font-semibold text-krishi-textMain">
-                तालुका (Taluka)
+                {t("auth.talukaLabel")}
               </label>
               <select
                 value={taluka}
@@ -171,7 +179,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
               >
                 {talukas.map((tItem) => (
                   <option key={tItem.nameEn} value={tItem.nameEn}>
-                    {tItem.nameMr} ({tItem.nameEn})
+                    {language === "en" ? tItem.nameEn : `${tItem.nameMr} (${tItem.nameEn})`}
                   </option>
                 ))}
               </select>
@@ -181,13 +189,13 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
           {/* Irrigation Source Toggles */}
           <div className="space-y-1.5 text-left">
             <label className="block text-sm font-semibold text-krishi-textMain">
-              पाणीपुरवठा / सिंचन स्रोत (Irrigation Sources)
+              {t("farming.irrigationSourceLabel")}
             </label>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: "drip", label: "ठिबक सिंचन (Drip)" },
                 { id: "sprinkler", label: "तुषार सिंचन (Sprinkler)" },
-                { id: "well", label: "विहीर (Open Well)" },
+                { id: "well", label: "विहीर (Well)" },
                 { id: "borewell", label: "बोअरवेल (Borewell)" },
                 { id: "canal", label: "कालवा (Canal)" },
                 { id: "rainfed", label: "कोरडवाहू (Rainfed)" },
@@ -198,7 +206,7 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
                     key={src.id}
                     type="button"
                     onClick={() => toggleIrrigation(src.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                    className={`min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                       isSelected
                         ? "bg-krishi-deepGreen text-white border-krishi-deepGreen shadow-subtle"
                         : "bg-white text-krishi-textMain border-krishi-border hover:bg-krishi-ivory-100"
@@ -213,11 +221,11 @@ export const FarmModal: React.FC<FarmModalProps> = ({ isOpen, onClose, onSuccess
 
           {/* Modal Actions */}
           <div className="pt-3 flex items-center justify-end gap-2 border-t border-krishi-border">
-            <Button type="button" variant="ghost" size="md" onClick={onClose}>
-              रद्द करा (Cancel)
+            <Button type="button" variant="ghost" size="md" onClick={onClose} className="min-h-[44px]">
+              {t("common.cancel")}
             </Button>
-            <Button type="submit" variant="primary" size="md" isLoading={isLoading}>
-              शेत जतन करा (Save Farm)
+            <Button type="submit" variant="primary" size="md" isLoading={isLoading} className="min-h-[44px]">
+              {t("common.save")}
             </Button>
           </div>
         </form>

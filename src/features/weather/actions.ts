@@ -3,6 +3,8 @@
 import { fetchWeatherForLocation } from "./service";
 import { WeatherDataResponse } from "./types";
 
+export type { WeatherDataResponse };
+
 export async function getWeatherAction(
   districtKey: string = "Pune"
 ): Promise<WeatherDataResponse> {

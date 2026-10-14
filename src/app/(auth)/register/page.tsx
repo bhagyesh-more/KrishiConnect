@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation, SupportedLanguage } from "@/lib/i18n";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
@@ -13,18 +13,16 @@ import { signUpAction } from "@/features/auth/actions";
 import { MAHARASHTRA_DISTRICTS } from "@/features/auth/maharashtraDistricts";
 import {
   UserPlus,
-  LogIn,
   Sprout,
   Store,
   GraduationCap,
   ShoppingBag,
   AlertCircle,
   CheckCircle2,
-  ShieldAlert,
 } from "lucide-react";
 
 export default function RegisterPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const router = useRouter();
 
   const [fullName, setFullName] = useState("");
@@ -39,7 +37,6 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // Available talukas for selected district
   const selectedDistrictData = MAHARASHTRA_DISTRICTS[district];
   const talukas = selectedDistrictData ? selectedDistrictData.talukas : [];
 
@@ -67,19 +64,17 @@ export default function RegisterPage() {
       });
 
       if (res.success) {
-        setSuccessMsg(res.message || "नोंदणी यशस्वी झाली!");
-        if (res.data?.requiresEmailVerification) {
-          // Stay on page and show message
-        } else {
+        setSuccessMsg(res.message || t("auth.registerSuccess"));
+        if (!res.data?.requiresEmailVerification) {
           setTimeout(() => {
             router.push("/home");
           }, 800);
         }
       } else {
-        setErrorMsg(res.error || "नोंदणी अयशस्वी झाली.");
+        setErrorMsg(res.error || t("auth.registerFailed"));
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "काहीतरी चूक झाली.");
+      setErrorMsg(err.message || t("common.error"));
     } finally {
       setIsLoading(false);
     }
@@ -88,31 +83,31 @@ export default function RegisterPage() {
   const roleCards = [
     {
       id: "farmer" as const,
-      title: "शेतकरी (Farmer)",
-      desc: "पिक व्यवस्थापन, हवामान सल्ला, शेतीमाल विक्री व मंच चर्चा",
+      title: t("auth.roleFarmerTitle"),
+      desc: t("auth.roleFarmerDesc"),
       icon: Sprout,
-      badge: "त्वरित प्रवेश",
+      badge: t("roles.verified"),
     },
     {
       id: "buyer" as const,
-      title: "खरेदीदार (Produce Buyer)",
-      desc: "थेट शेतकऱ्यांकडून दर्जेदार मालाची खरेदी व चौकशी",
+      title: t("auth.roleBuyerTitle"),
+      desc: t("auth.roleBuyerDesc"),
       icon: ShoppingBag,
-      badge: "त्वरित प्रवेश",
+      badge: t("roles.verified"),
     },
     {
       id: "expert" as const,
-      title: "कृषी तज्ज्ञ (Agri Expert)",
-      desc: "शेतकऱ्यांना तांत्रिक मार्गदर्शन (पदवी पडताळणी प्रलंबित राहील)",
+      title: t("auth.roleExpertTitle"),
+      desc: t("auth.roleExpertDesc"),
       icon: GraduationCap,
-      badge: "पडताळणी आवश्यक",
+      badge: t("roles.pending"),
     },
     {
       id: "seller" as const,
-      title: "कृषी विक्रेता (Agri Seller)",
-      desc: "बियाणे, खते व अवजारे सूची (परवाना पडताळणी प्रलंबित राहील)",
+      title: t("auth.roleSellerTitle"),
+      desc: t("auth.roleSellerDesc"),
       icon: Store,
-      badge: "पडताळणी आवश्यक",
+      badge: t("roles.pending"),
     },
   ];
 
@@ -123,10 +118,10 @@ export default function RegisterPage() {
           <UserPlus className="w-6 h-6" />
         </div>
         <CardTitle className="text-2xl font-black text-krishi-deepGreen">
-          नवीन खाते उघडा (Register)
+          {t("auth.registerTitle")}
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm">
-          महाराष्ट्रातील शेतकऱ्यांचे डिजिटल व्यासपीठ
+          {t("auth.registerSubtitle")}
         </CardDescription>
       </CardHeader>
 
@@ -145,10 +140,10 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Full Name */}
         <Input
-          label="पूर्ण नाव (Full Name)"
+          label={t("auth.fullNameLabel")}
           type="text"
           required
-          placeholder="उदा. ज्ञानेश्वर पाटील"
+          placeholder={t("auth.fullNamePlaceholder")}
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
         />
@@ -156,31 +151,31 @@ export default function RegisterPage() {
         {/* Email & Password */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="ईमेल आयडी (Email)"
+            label={t("auth.emailLabel")}
             type="email"
             required
             autoComplete="email"
-            placeholder="shree@krishi.demo"
+            placeholder={t("auth.emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
           <Input
-            label="पासवर्ड (Password)"
+            label={t("auth.passwordLabel")}
             type="password"
             required
             autoComplete="new-password"
-            placeholder="किमान ६ वर्ण"
+            placeholder={t("auth.passwordPlaceholder")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        {/* Location Selection (Maharashtra District & Taluka) */}
+        {/* Location Selection */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5 text-left">
             <label className="block text-sm font-semibold text-krishi-textMain">
-              जिल्हा (District — Maharashtra)
+              {t("auth.districtLabel")}
             </label>
             <select
               value={district}
@@ -189,7 +184,7 @@ export default function RegisterPage() {
             >
               {Object.entries(MAHARASHTRA_DISTRICTS).map(([key, item]) => (
                 <option key={key} value={key}>
-                  {item.nameMr} ({item.nameEn})
+                  {language === "en" ? item.nameEn : `${item.nameMr} (${item.nameEn})`}
                 </option>
               ))}
             </select>
@@ -197,7 +192,7 @@ export default function RegisterPage() {
 
           <div className="space-y-1.5 text-left">
             <label className="block text-sm font-semibold text-krishi-textMain">
-              तालुका (Taluka)
+              {t("auth.talukaLabel")}
             </label>
             <select
               value={taluka}
@@ -206,7 +201,7 @@ export default function RegisterPage() {
             >
               {talukas.map((tItem) => (
                 <option key={tItem.nameEn} value={tItem.nameEn}>
-                  {tItem.nameMr} ({tItem.nameEn})
+                  {language === "en" ? tItem.nameEn : `${tItem.nameMr} (${tItem.nameEn})`}
                 </option>
               ))}
             </select>
@@ -216,13 +211,13 @@ export default function RegisterPage() {
         {/* Preferred Language */}
         <div className="space-y-1.5 text-left">
           <label className="block text-sm font-semibold text-krishi-textMain">
-            प्राधान्य दिलेली भाषा (Language)
+            {t("auth.languageLabel")}
           </label>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { code: "mr" as const, label: "मराठी (Default)" },
-              { code: "hi" as const, label: "हिंदी" },
-              { code: "en" as const, label: "English" },
+              { code: "mr" as const, label: t("languages.mr") },
+              { code: "hi" as const, label: t("languages.hi") },
+              { code: "en" as const, label: t("languages.en") },
             ].map((lang) => (
               <button
                 key={lang.code}
@@ -243,7 +238,7 @@ export default function RegisterPage() {
         {/* Role Selection Grid */}
         <div className="space-y-2 text-left pt-1">
           <label className="block text-sm font-semibold text-krishi-textMain">
-            आपली मुख्य भूमिका निवडा (Select Role)
+            {t("auth.roleLabel")}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {roleCards.map((rc) => {
@@ -277,12 +272,6 @@ export default function RegisterPage() {
               );
             })}
           </div>
-
-          {(role === "expert" || role === "seller") && (
-            <p className="text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-              ⚠️ <strong>सूचना:</strong> कृषी तज्ज्ञ व विक्रेता खात्यांसाठी नोंदणीनंतर प्रशासक स्तरावर कागदपत्रांची पडताळणी होईपर्यंत खात्याची स्थिती &quot;पडताळणी प्रलंबित (Pending)&quot; राहील.
-            </p>
-          )}
         </div>
 
         <Button
@@ -290,21 +279,21 @@ export default function RegisterPage() {
           variant="primary"
           size="lg"
           isLoading={isLoading}
-          className="w-full mt-4"
+          className="w-full mt-4 min-h-[48px]"
         >
           <UserPlus className="w-4 h-4 mr-2" />
-          <span>नोंदणी पूर्ण करा (Complete Registration)</span>
+          <span>{t("auth.registerButton")}</span>
         </Button>
       </form>
 
       <div className="pt-4 border-t border-krishi-border/80 text-center">
         <p className="text-xs text-krishi-textMuted">
-          आधीच खाते आहे का?{" "}
+          {t("auth.alreadyHaveAccount")}{" "}
           <Link
             href="/login"
             className="font-bold text-krishi-deepGreen hover:underline inline-flex items-center gap-1"
           >
-            येथे लॉगिन करा (Log In)
+            {t("auth.loginLink")}
           </Link>
         </p>
       </div>

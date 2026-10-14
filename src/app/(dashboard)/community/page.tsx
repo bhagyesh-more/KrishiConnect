@@ -135,13 +135,14 @@ export default function CommunityPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/home"
-              className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-1 -ml-1 rounded-lg"
+              className="md:hidden text-krishi-textMuted hover:text-krishi-deepGreen p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 rounded-xl active:bg-krishi-primary-50"
+              aria-label="Back to home"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <h1 className="text-2xl font-extrabold text-krishi-deepGreen flex items-center gap-2">
-              <Users className="w-7 h-7 text-krishi-leafGreen" />
-              <span>शेतकरी चर्चा मंच (Farmer Community)</span>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-krishi-deepGreen flex items-center gap-2">
+              <Users className="w-6 h-6 sm:w-7 sm:h-7 text-krishi-leafGreen" />
+              <span>शेतकरी चर्चा मंच (Community)</span>
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-krishi-textMuted mt-1">
@@ -153,7 +154,7 @@ export default function CommunityPage() {
         <div className="flex items-center space-x-2 shrink-0">
           <button
             onClick={() => setActiveView(activeView === "feed" ? "moderation" : "feed")}
-            className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition ${
+            className={`flex items-center space-x-1.5 px-3 py-2 min-h-[44px] rounded-xl text-xs font-semibold border transition ${
               activeView === "moderation"
                 ? "bg-red-50 text-red-700 border-red-300 ring-1 ring-red-400"
                 : "bg-white text-krishi-charcoal border-krishi-lightGray/70 hover:bg-krishi-warmIvory/60"
@@ -167,7 +168,7 @@ export default function CommunityPage() {
             variant="primary"
             size="sm"
             onClick={() => setIsCreateModalOpen(true)}
-            className="shadow-sm"
+            className="shadow-sm min-h-[44px] px-3.5 rounded-xl font-bold"
           >
             <Plus className="w-4 h-4 mr-1" />
             <span>प्रश्न विचारा</span>
