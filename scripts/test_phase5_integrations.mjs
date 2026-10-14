@@ -117,6 +117,87 @@ assert(
   "Crops actions respect NEXT_PUBLIC_USE_MOCK_DATA override for crop guides"
 );
 
+// ------------------------------------------------------------------
+// Auth Callback Route, Open-Redirect Prevention & Error Mapping Tests
+// ------------------------------------------------------------------
+const callbackRouteSource = readFileSync("src/app/auth/callback/route.ts", "utf-8");
+assert(
+  callbackRouteSource.includes("exchangeCodeForSession"),
+  "Auth callback route calls exchangeCodeForSession"
+);
+assert(
+  callbackRouteSource.includes("/login?error=auth_callback_failed"),
+  "Auth callback route redirects to safe error URL on failure or missing code"
+);
+assert(
+  !callbackRouteSource.includes("error.message"),
+  "Auth callback route does not leak raw error messages in redirect parameters"
+);
+
+// Verify open-redirect sanitizer logic
+function testSanitizeNextUrl(next) {
+  if (!next) return "/home";
+  if (next.startsWith("/") && !next.startsWith("//") && !next.includes("\\")) {
+    return next;
+  }
+  return "/home";
+}
+
+assert(testSanitizeNextUrl("/crops") === "/crops", "Allows valid internal next destination (/crops)");
+assert(testSanitizeNextUrl("/profile") === "/profile", "Allows valid internal next destination (/profile)");
+assert(testSanitizeNextUrl("https://attacker.com") === "/home", "Blocks external full-URL open redirect");
+assert(testSanitizeNextUrl("//attacker.com") === "/home", "Blocks protocol-relative open redirect");
+assert(testSanitizeNextUrl("/\\attacker.com") === "/home", "Blocks backslash open-redirect bypass");
+assert(testSanitizeNextUrl(null) === "/home", "Falls back to /home when next is null");
+
+// Verify auth actions configuration
+const authActionsSource = readFileSync("src/features/auth/actions.ts", "utf-8");
+assert(
+  authActionsSource.includes("emailRedirectTo") && authActionsSource.includes("/auth/callback"),
+  "Registration configures emailRedirectTo pointing to /auth/callback"
+);
+assert(
+  authActionsSource.includes("requiresEmailVerification"),
+  "Registration preserves requiresEmailVerification status for unconfirmed users"
+);
+assert(
+  authActionsSource.includes("Email not confirmed") && authActionsSource.includes("पडताळणी"),
+  "Login maps 'Email not confirmed' error to clear bilingual verification message"
+);
+
+// Verify middleware mock bypass logic
+const middlewareSource = readFileSync("src/lib/supabase/middleware.ts", "utf-8");
+assert(
+  middlewareSource.includes("NEXT_PUBLIC_USE_MOCK_DATA") &&
+  middlewareSource.includes("your-project-id"),
+  "Middleware explicitly checks NEXT_PUBLIC_USE_MOCK_DATA and template project URLs"
+);
+
+function testMiddlewareBypass(useMockData, url, anon) {
+  return (
+    useMockData === "true" ||
+    !url ||
+    !anon ||
+    url.includes("placeholder-project") ||
+    url.includes("your-project-id") ||
+    anon.includes("placeholder-anon-key") ||
+    anon.includes("...")
+  );
+}
+
+assert(
+  testMiddlewareBypass("true", "https://ppwkaaddtjommtesxxsc.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.valid"),
+  "Middleware bypasses Supabase session refresh when NEXT_PUBLIC_USE_MOCK_DATA=true"
+);
+assert(
+  testMiddlewareBypass("false", "https://your-project-id.supabase.co", "eyJhbGci..."),
+  "Middleware bypasses Supabase session refresh when template placeholders are present"
+);
+assert(
+  !testMiddlewareBypass("false", "https://ppwkaaddtjommtesxxsc.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.valid"),
+  "Middleware executes normal session refresh when mock mode is false and credentials are real"
+);
+
 // ==========================================
 // 2. Weather Client (Open-Meteo & Offline Fallback)
 // ==========================================

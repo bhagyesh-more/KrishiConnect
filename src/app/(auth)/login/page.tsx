@@ -23,6 +23,13 @@ function LoginFormContent() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  const authErrorParam = searchParams.get("error");
+  React.useEffect(() => {
+    if (authErrorParam === "auth_callback_failed") {
+      setErrorMsg("प्रमाणीकरण लिंक अवैध किंवा कालबाह्य झाली आहे. कृपया लॉगिन करा. (Authentication link is invalid or expired. Please log in).");
+    }
+  }, [authErrorParam]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);

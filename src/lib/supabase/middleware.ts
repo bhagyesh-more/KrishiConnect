@@ -12,8 +12,17 @@ export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // If Supabase is not yet configured, bypass auth redirect to allow local development
-  if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes("placeholder-project")) {
+  // Bypass Supabase session refresh in mock mode or when credentials are unconfigured / placeholders
+  const isMockOrPlaceholder =
+    process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true" ||
+    !supabaseUrl ||
+    !supabaseAnonKey ||
+    supabaseUrl.includes("placeholder-project") ||
+    supabaseUrl.includes("your-project-id") ||
+    supabaseAnonKey.includes("placeholder-anon-key") ||
+    supabaseAnonKey.includes("...");
+
+  if (isMockOrPlaceholder) {
     return response;
   }
 

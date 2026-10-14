@@ -34,8 +34,10 @@ export async function signUpAction(input: RegisterInput): Promise<ActionResult> 
 
   // Check if Supabase credentials are configured
   if (
+    process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true" ||
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder-project")
+    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder-project") ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("your-project-id")
   ) {
     return {
       success: false,
@@ -43,10 +45,13 @@ export async function signUpAction(input: RegisterInput): Promise<ActionResult> 
     };
   }
 
+  const emailRedirectTo = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/callback`;
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo,
       data: {
         full_name: fullName,
         district,
@@ -94,8 +99,10 @@ export async function signInAction(input: LoginInput): Promise<ActionResult> {
   const supabase = createClient();
 
   if (
+    process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true" ||
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder-project")
+    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder-project") ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("your-project-id")
   ) {
     return {
       success: false,
@@ -109,9 +116,17 @@ export async function signInAction(input: LoginInput): Promise<ActionResult> {
   });
 
   if (error) {
+    const isEmailNotConfirmed =
+      error.message === "Email not confirmed" ||
+      error.message.toLowerCase().includes("email not confirmed");
+
+    const userFriendlyError = isEmailNotConfirmed
+      ? "आपला ईमेल अद्याप पडताळलेला नाही. कृपया इनबॉक्समधील पडताळणी लिंक तपासा. (Email not confirmed. Please check your inbox for the verification link)."
+      : error.message;
+
     return {
       success: false,
-      error: error.message,
+      error: userFriendlyError,
     };
   }
 
