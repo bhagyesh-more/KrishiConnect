@@ -114,12 +114,12 @@ CREATE TABLE IF NOT EXISTS public.marketplace_enquiries (
 DROP TRIGGER IF EXISTS trg_product_listings_updated_at ON public.product_listings;
 CREATE TRIGGER trg_product_listings_updated_at
 BEFORE UPDATE ON public.product_listings
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 DROP TRIGGER IF EXISTS trg_marketplace_enquiries_updated_at ON public.marketplace_enquiries;
 CREATE TRIGGER trg_marketplace_enquiries_updated_at
 BEFORE UPDATE ON public.marketplace_enquiries
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 -- 5. Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_product_listings_seller_id ON public.product_listings(seller_id);

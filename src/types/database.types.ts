@@ -1008,6 +1008,47 @@ export interface Database {
           created_at?: string;
         };
       };
+      ai_consultations: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          prompt_text: string;
+          response_text: string;
+          crop_context: string | null;
+          district: string | null;
+          language: string;
+          safety_warnings_triggered: string[];
+          has_harmful_substance_flag: boolean;
+          is_mock_response: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          prompt_text: string;
+          response_text: string;
+          crop_context?: string | null;
+          district?: string | null;
+          language?: string;
+          safety_warnings_triggered?: string[];
+          has_harmful_substance_flag?: boolean;
+          is_mock_response?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          prompt_text?: string;
+          response_text?: string;
+          crop_context?: string | null;
+          district?: string | null;
+          language?: string;
+          safety_warnings_triggered?: string[];
+          has_harmful_substance_flag?: boolean;
+          is_mock_response?: boolean;
+          created_at?: string;
+        };
+      };
     };
   };
 }

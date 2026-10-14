@@ -115,12 +115,12 @@ CREATE TABLE IF NOT EXISTS public.post_reports (
 DROP TRIGGER IF EXISTS trg_community_posts_updated_at ON public.community_posts;
 CREATE TRIGGER trg_community_posts_updated_at
 BEFORE UPDATE ON public.community_posts
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 DROP TRIGGER IF EXISTS trg_post_comments_updated_at ON public.post_comments;
 CREATE TRIGGER trg_post_comments_updated_at
 BEFORE UPDATE ON public.post_comments
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 -- 8. Counters Maintenance Functions & Triggers
 -- Upvotes counter trigger

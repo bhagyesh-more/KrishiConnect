@@ -188,22 +188,22 @@ CREATE TABLE IF NOT EXISTS public.resource_bookmarks (
 DROP TRIGGER IF EXISTS trg_government_schemes_updated_at ON public.government_schemes;
 CREATE TRIGGER trg_government_schemes_updated_at
 BEFORE UPDATE ON public.government_schemes
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 DROP TRIGGER IF EXISTS trg_expert_profiles_updated_at ON public.expert_profiles;
 CREATE TRIGGER trg_expert_profiles_updated_at
 BEFORE UPDATE ON public.expert_profiles
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 DROP TRIGGER IF EXISTS trg_consultation_requests_updated_at ON public.consultation_requests;
 CREATE TRIGGER trg_consultation_requests_updated_at
 BEFORE UPDATE ON public.consultation_requests
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 DROP TRIGGER IF EXISTS trg_learning_resources_updated_at ON public.learning_resources;
 CREATE TRIGGER trg_learning_resources_updated_at
 BEFORE UPDATE ON public.learning_resources
-FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 -- 10. Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_government_schemes_category ON public.government_schemes(category);

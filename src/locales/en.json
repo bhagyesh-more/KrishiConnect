@@ -222,6 +222,21 @@
     "readTime": "min read",
     "readFull": "Read Full Guide"
   },
+  "weather": {
+    "title": "Local Agricultural Weather",
+    "subtitle": "Accurate agro-meteorological forecast and timely farm operation planning",
+    "currentConditions": "Current Weather Conditions",
+    "forecastTitle": "5-Day Weather Forecast",
+    "advisoriesTitle": "Weather-Dependent Farming Advisories",
+    "selectDistrict": "Select District",
+    "liveSource": "Live Open-Meteo Weather",
+    "fallbackSource": "Offline Climate Baseline"
+  },
+  "ai": {
+    "title": "Agri AI Assistant",
+    "subtitle": "Instant agricultural guidance on crop diseases, fertilizers, and pest management",
+    "disclaimer": "Guidance is indicative only. Verify chemical recommendations with local experts."
+  },
   "errors": {
     "pageNotFound": "Page Not Found",
     "pageNotFoundDesc": "The page you are looking for does not exist or has been moved.",
