@@ -15,6 +15,11 @@ export type CommodityCategory = 'grains' | 'pulses' | 'vegetables' | 'fruits' | 
 export type PriceUnit = 'per_quintal' | 'per_kg' | 'per_crate' | 'per_ton' | 'per_dozen';
 export type ListingStatus = 'active' | 'paused' | 'sold_out' | 'removed';
 export type EnquiryStatus = 'new' | 'contacted' | 'accepted' | 'declined' | 'closed';
+export type SchemeCategory = 'subsidy' | 'insurance' | 'irrigation' | 'credit' | 'organic' | 'equipment' | 'general';
+export type ExpertSpecialization = 'agronomy_pest' | 'soil_fertilizer' | 'horticulture_fruits' | 'irrigation_engineering' | 'organic_farming' | 'animal_husbandry' | 'general_agri';
+export type ConsultationStatusType = 'pending' | 'accepted' | 'completed' | 'cancelled';
+export type LearningCategory = 'crop_care' | 'soil_health' | 'irrigation' | 'pest_disease' | 'post_harvest' | 'organic';
+export type LearningContentType = 'guide' | 'tutorial' | 'best_practices' | 'video_summary';
 
 export interface Database {
   public: {
@@ -693,6 +698,314 @@ export interface Database {
           status_notes?: string | null;
           created_at?: string;
           updated_at?: string;
+        };
+      };
+      government_schemes: {
+        Row: {
+          id: string;
+          scheme_code: string;
+          title_mr: string;
+          title_hi: string;
+          title_en: string;
+          administering_body: string;
+          category: SchemeCategory;
+          summary_mr: string;
+          summary_hi: string;
+          summary_en: string;
+          beneficiary_type: string;
+          eligibility_criteria: Json;
+          benefits_description_mr: string;
+          benefits_description_hi: string;
+          benefits_description_en: string;
+          documents_required: string[];
+          application_steps: string[];
+          official_portal_url: string | null;
+          last_verified_date: string;
+          application_deadline: string | null;
+          is_demo_record: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          scheme_code: string;
+          title_mr: string;
+          title_hi: string;
+          title_en: string;
+          administering_body: string;
+          category?: SchemeCategory;
+          summary_mr: string;
+          summary_hi: string;
+          summary_en: string;
+          beneficiary_type?: string;
+          eligibility_criteria?: Json;
+          benefits_description_mr: string;
+          benefits_description_hi: string;
+          benefits_description_en: string;
+          documents_required?: string[];
+          application_steps?: string[];
+          official_portal_url?: string | null;
+          last_verified_date?: string;
+          application_deadline?: string | null;
+          is_demo_record?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          scheme_code?: string;
+          title_mr?: string;
+          title_hi?: string;
+          title_en?: string;
+          administering_body?: string;
+          category?: SchemeCategory;
+          summary_mr?: string;
+          summary_hi?: string;
+          summary_en?: string;
+          beneficiary_type?: string;
+          eligibility_criteria?: Json;
+          benefits_description_mr?: string;
+          benefits_description_hi?: string;
+          benefits_description_en?: string;
+          documents_required?: string[];
+          application_steps?: string[];
+          official_portal_url?: string | null;
+          last_verified_date?: string;
+          application_deadline?: string | null;
+          is_demo_record?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      saved_schemes: {
+        Row: {
+          user_id: string;
+          scheme_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          scheme_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          scheme_id?: string;
+          created_at?: string;
+        };
+      };
+      expert_profiles: {
+        Row: {
+          id: string;
+          qualification: string;
+          specialization: ExpertSpecialization;
+          affiliation: string;
+          experience_years: number;
+          languages_spoken: string[];
+          supported_crops: string[];
+          district: string;
+          bio: string | null;
+          is_available: boolean;
+          is_verified: boolean;
+          is_demo_profile: boolean;
+          total_consultations_count: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          qualification: string;
+          specialization?: ExpertSpecialization;
+          affiliation: string;
+          experience_years?: number;
+          languages_spoken?: string[];
+          supported_crops?: string[];
+          district: string;
+          bio?: string | null;
+          is_available?: boolean;
+          is_verified?: boolean;
+          is_demo_profile?: boolean;
+          total_consultations_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          qualification?: string;
+          specialization?: ExpertSpecialization;
+          affiliation?: string;
+          experience_years?: number;
+          languages_spoken?: string[];
+          supported_crops?: string[];
+          district?: string;
+          bio?: string | null;
+          is_available?: boolean;
+          is_verified?: boolean;
+          is_demo_profile?: boolean;
+          total_consultations_count?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      consultation_requests: {
+        Row: {
+          id: string;
+          farmer_id: string;
+          expert_id: string | null;
+          crop_name: string | null;
+          subject: string;
+          description: string;
+          preferred_contact_method: 'phone' | 'whatsapp' | 'in_person_kvk';
+          preferred_time_slot: string | null;
+          farmer_phone: string | null;
+          image_urls: string[];
+          status: ConsultationStatusType;
+          expert_notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          farmer_id: string;
+          expert_id?: string | null;
+          crop_name?: string | null;
+          subject: string;
+          description: string;
+          preferred_contact_method?: 'phone' | 'whatsapp' | 'in_person_kvk';
+          preferred_time_slot?: string | null;
+          farmer_phone?: string | null;
+          image_urls?: string[];
+          status?: ConsultationStatusType;
+          expert_notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          farmer_id?: string;
+          expert_id?: string | null;
+          crop_name?: string | null;
+          subject?: string;
+          description?: string;
+          preferred_contact_method?: 'phone' | 'whatsapp' | 'in_person_kvk';
+          preferred_time_slot?: string | null;
+          farmer_phone?: string | null;
+          image_urls?: string[];
+          status?: ConsultationStatusType;
+          expert_notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      expert_responses: {
+        Row: {
+          id: string;
+          request_id: string;
+          expert_id: string;
+          recommendation: string;
+          recommended_practices: string | null;
+          disclaimer: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          request_id: string;
+          expert_id: string;
+          recommendation: string;
+          recommended_practices?: string | null;
+          disclaimer?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          request_id?: string;
+          expert_id?: string;
+          recommendation?: string;
+          recommended_practices?: string | null;
+          disclaimer?: string;
+          created_at?: string;
+        };
+      };
+      learning_resources: {
+        Row: {
+          id: string;
+          title_mr: string;
+          title_hi: string;
+          title_en: string;
+          summary_mr: string;
+          summary_hi: string;
+          summary_en: string;
+          content_markdown_mr: string;
+          content_markdown_hi: string;
+          content_markdown_en: string;
+          category: LearningCategory;
+          content_type: LearningContentType;
+          crop_tag: string | null;
+          difficulty_level: 'beginner' | 'intermediate' | 'advanced';
+          estimated_minutes: number;
+          source_attribution: string;
+          is_demo_resource: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title_mr: string;
+          title_hi: string;
+          title_en: string;
+          summary_mr: string;
+          summary_hi: string;
+          summary_en: string;
+          content_markdown_mr: string;
+          content_markdown_hi: string;
+          content_markdown_en: string;
+          category?: LearningCategory;
+          content_type?: LearningContentType;
+          crop_tag?: string | null;
+          difficulty_level?: 'beginner' | 'intermediate' | 'advanced';
+          estimated_minutes?: number;
+          source_attribution: string;
+          is_demo_resource?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title_mr?: string;
+          title_hi?: string;
+          title_en?: string;
+          summary_mr?: string;
+          summary_hi?: string;
+          summary_en?: string;
+          content_markdown_mr?: string;
+          content_markdown_hi?: string;
+          content_markdown_en?: string;
+          category?: LearningCategory;
+          content_type?: LearningContentType;
+          crop_tag?: string | null;
+          difficulty_level?: 'beginner' | 'intermediate' | 'advanced';
+          estimated_minutes?: number;
+          source_attribution?: string;
+          is_demo_resource?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      resource_bookmarks: {
+        Row: {
+          user_id: string;
+          resource_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          resource_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          resource_id?: string;
+          created_at?: string;
         };
       };
     };

@@ -184,6 +184,44 @@
     "markSoldOut": "बिक चुका चिह्नित करें",
     "viewDetails": "विवरण देखें"
   },
+  "schemes": {
+    "title": "सरकारी कृषि योजनाएं",
+    "subtitle": "महाराष्ट्र और केंद्र सरकार की अनुदान योजनाओं की जानकारी और आधिकारिक आवेदन लिंक",
+    "searchPlaceholder": "योजना का नाम या विवरण खोजें...",
+    "categoryAll": "सभी योजनाएं",
+    "savedOnly": "सहेजी गई योजनाएं",
+    "checkEligibility": "पात्रता जांचें",
+    "officialPortal": "आधिकारिक पोर्टल पर जाएं",
+    "verifiedSource": "सत्यापित स्रोत",
+    "demoNotice": "प्रदर्शनात्मक रिकॉर्ड (डेमो डेटा)",
+    "documentsRequired": "आवश्यक दस्तावेज",
+    "applicationSteps": "आवेदन करने की प्रक्रिया",
+    "targetBeneficiaries": "लक्षित लाभार्थी",
+    "benefits": "योजना के मुख्य लाभ"
+  },
+  "experts": {
+    "title": "कृषि विशेषज्ञ परामर्श केंद्र",
+    "subtitle": "प्रमाणित वैज्ञानिकों और विशेषज्ञों से संपर्क करें और फसलों की समस्याओं पर मार्गदर्शन पाएं",
+    "tabDirectory": "विशेषज्ञ निर्देशिका",
+    "tabMyConsultations": "मेरी परामर्श विनंतियां",
+    "requestConsultation": "सलाह मांगें",
+    "specializationAll": "सभी विशेषज्ञ",
+    "districtAll": "सभी जिले",
+    "experienceYears": "वर्षों का अनुभव",
+    "verifiedExpert": "सत्यापित विशेषज्ञ",
+    "demoProfile": "प्रदर्शनात्मक प्रोफाइल",
+    "submitRequest": "अनुरोध सबमिट करें"
+  },
+  "learning": {
+    "title": "कृषि ज्ञान और शिक्षण केंद्र",
+    "subtitle": "आधुनिक कृषि, सिंचाई और कीट नियंत्रण के व्यावहारिक मार्गदर्शक",
+    "searchPlaceholder": "मार्गदर्शिका या फसल खोजें...",
+    "categoryAll": "सभी विषय",
+    "typeAll": "सभी प्रकार",
+    "bookmarkedOnly": "सहेजे गए लेख",
+    "readTime": "मिनट वाचन",
+    "readFull": "पूरा पढ़ें"
+  },
   "errors": {
     "pageNotFound": "पेज नहीं मिला",
     "pageNotFoundDesc": "आप जिस पेज की तलाश कर रहे हैं वह मौजूद नहीं है या हटा दिया गया है।",

@@ -184,6 +184,44 @@
     "markSoldOut": "Mark Sold Out",
     "viewDetails": "View Details"
   },
+  "schemes": {
+    "title": "Government Agricultural Schemes",
+    "subtitle": "Discover verified subsidies and welfare schemes from Maharashtra and Central Governments",
+    "searchPlaceholder": "Search schemes by name or description...",
+    "categoryAll": "All Schemes",
+    "savedOnly": "Saved Schemes",
+    "checkEligibility": "Check Eligibility",
+    "officialPortal": "Visit Official Portal",
+    "verifiedSource": "Verified Official Source",
+    "demoNotice": "Demonstration Record (Unverified Demo Data)",
+    "documentsRequired": "Required Documents",
+    "applicationSteps": "How to Apply",
+    "targetBeneficiaries": "Beneficiaries",
+    "benefits": "Key Benefits"
+  },
+  "experts": {
+    "title": "Agri Expert Connect",
+    "subtitle": "Connect directly with certified agricultural scientists and specialists for expert crop advice",
+    "tabDirectory": "Expert Directory",
+    "tabMyConsultations": "My Consultations",
+    "requestConsultation": "Request Consultation",
+    "specializationAll": "All Specializations",
+    "districtAll": "All Districts",
+    "experienceYears": "Years Experience",
+    "verifiedExpert": "Verified Expert",
+    "demoProfile": "Demonstration Profile",
+    "submitRequest": "Submit Request"
+  },
+  "learning": {
+    "title": "Agricultural Learning Centre",
+    "subtitle": "Practical guides, tutorials, and research-backed best practices for modern farming",
+    "searchPlaceholder": "Search guides, topics, or crops...",
+    "categoryAll": "All Categories",
+    "typeAll": "All Types",
+    "bookmarkedOnly": "Saved Guides",
+    "readTime": "min read",
+    "readFull": "Read Full Guide"
+  },
   "errors": {
     "pageNotFound": "Page Not Found",
     "pageNotFoundDesc": "The page you are looking for does not exist or has been moved.",

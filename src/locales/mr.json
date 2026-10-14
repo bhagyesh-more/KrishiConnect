@@ -184,6 +184,44 @@
     "markSoldOut": "विक्री झाली",
     "viewDetails": "तपशील पहा"
   },
+  "schemes": {
+    "title": "शासकीय कृषी योजना",
+    "subtitle": "महाराष्ट्र आणि केंद्र शासनाच्या अनुदानात्मक योजनांची माहिती व अधिकृत अर्ज लिंक्स",
+    "searchPlaceholder": "योजनेचे नाव किंवा वर्णन शोधा...",
+    "categoryAll": "सर्व योजना",
+    "savedOnly": "जतन केलेल्या योजना",
+    "checkEligibility": "पात्रता तपासा",
+    "officialPortal": "अधिकृत पोर्टलवर जा",
+    "verifiedSource": "सत्यापित स्त्रोत",
+    "demoNotice": "प्रात्यक्षिक रेकॉर्ड (डेमो डेटा)",
+    "documentsRequired": "आवश्यक कागदपत्रे",
+    "applicationSteps": "अर्ज करण्याची पद्धत",
+    "targetBeneficiaries": "लाभार्थी घटक",
+    "benefits": "योजनेचे मुख्य लाभ"
+  },
+  "experts": {
+    "title": "कृषी तज्ज्ञ सल्ला केंद्र",
+    "subtitle": "मान्यताप्राप्त शास्त्रज्ञ व तज्ज्ञांशी संपर्क साधा आणि पिकांच्या समस्यांवर योग्य मार्गदर्शन मिळवा",
+    "tabDirectory": "तज्ज्ञ निर्देशिका",
+    "tabMyConsultations": "माझ्या सल्ला विनंत्या",
+    "requestConsultation": "सल्ला विचारा",
+    "specializationAll": "सर्व विशेषज्ञ",
+    "districtAll": "सर्व जिल्हे",
+    "experienceYears": "वर्षे अनुभव",
+    "verifiedExpert": "सत्यापित तज्ज्ञ",
+    "demoProfile": "प्रात्यक्षिक प्रोफाईल",
+    "submitRequest": "विनंती सबमिट करा"
+  },
+  "learning": {
+    "title": "कृषी ज्ञान आणि शिक्षण केंद्र",
+    "subtitle": "आधुनिक शेती, खत-पाणी व्यवस्थापन आणि कीड नियंत्रणाचे व्यावहारिक मार्गदर्शक",
+    "searchPlaceholder": "मार्गदर्शक किंवा पीक शोधा...",
+    "categoryAll": "सर्व विषय",
+    "typeAll": "सर्व प्रकार",
+    "bookmarkedOnly": "जतन केलेले",
+    "readTime": "मिनिटे वाचन",
+    "readFull": "पूर्ण वाचा"
+  },
   "errors": {
     "pageNotFound": "हे पान सापडले नाही",
     "pageNotFoundDesc": "तुम्ही शोधत असलेले पान अस्तित्वात नाही किंवा हलवले गेले आहे.",
